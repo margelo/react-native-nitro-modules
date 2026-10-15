@@ -33,6 +33,7 @@ const config = {
   resolver: {
     // Native sources are staged in the RN package. Only nitro-core is a JS workspace.
     blockList: [
+      otherTestDirectories,
       new RegExp(
         `^${corePath}[/\\\\](?!packages(?:[/\\\\]nitro-core(?:[/\\\\]|$)|$)).*`
       ),
@@ -41,7 +42,6 @@ const config = {
       acc[name] = path.join(__dirname, 'node_modules', name)
       return acc
     }, {}),
-    blockList: [otherTestDirectories],
     // Test files can only be evaluated while Harness collects tests, so a
     // Fast Refresh of one must reload the whole app.
     unstable_forceFullRefreshPatterns: [/\.harness\.[jt]sx?$/],
