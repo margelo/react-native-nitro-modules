@@ -21,7 +21,7 @@
     "android/src/",
     "ios/",
     "cpp/",
-    "nitro_pod_utils.rb",
+    "apple/nitro_pod_utils.rb",
     "README.md",
     "NitroModules.podspec",
     "LICENSE",

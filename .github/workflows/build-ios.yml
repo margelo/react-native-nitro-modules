@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'packages/react-native-nitro-modules/nitro'
+      - 'packages/react-native-nitro-modules/apple/**'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
       - '.github/workflows/build-ios.yml'
@@ -25,6 +26,7 @@ on:
   pull_request:
     paths:
       - 'packages/react-native-nitro-modules/nitro'
+      - 'packages/react-native-nitro-modules/apple/**'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
       - '.github/workflows/build-ios.yml'

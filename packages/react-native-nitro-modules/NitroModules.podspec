@@ -1,5 +1,5 @@
 require "json"
-require "./nitro_pod_utils"
+require_relative "./apple/nitro_pod_utils"
 
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 
