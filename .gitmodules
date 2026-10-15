@@ -1,0 +1,4 @@
+[submodule "core"]
+	path = core
+	url = https://github.com/margelo/nitro.git
+	branch = core-split

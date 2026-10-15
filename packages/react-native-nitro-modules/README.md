@@ -297,4 +297,4 @@ const value = myHybridObject.getEnumValue() // <-- typed as `MyEnum` instead of 
 
 Make sure to always include the header that defines the `JSIConverter<MyEnum>` overload inside the `MyHybridObject` file, as this is where the `JSIConverter<T>` overloads are accessed from.
 
-[**Nitrogen**](../nitrogen/) can automatically generate such `JSIConverter<T>` extensions for enums, TypeScript unions, and even structs/objects - so it is generally recommended to use nitrogen.
+[**Nitrogen**](https://github.com/margelo/nitro/tree/main/packages/nitrogen) can automatically generate such `JSIConverter<T>` extensions for enums, TypeScript unions, and even structs/objects - so it is generally recommended to use nitrogen.

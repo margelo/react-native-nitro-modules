@@ -26,6 +26,9 @@ on:
     branches:
       - main
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - ".github/workflows/harness-ios.yml"
       - "apps/example/ios/**"
       - "**/nitrogen/generated/shared/**"
@@ -50,6 +53,9 @@ on:
       - "apps/example/rn-harness.config.mjs"
   pull_request:
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - ".github/workflows/harness-ios.yml"
       - "apps/example/ios/**"
       - "**/nitrogen/generated/shared/**"
@@ -98,6 +104,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          submodules: recursive
           fetch-depth: 1
 
       - uses: oven-sh/setup-bun@v2

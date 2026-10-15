@@ -118,6 +118,7 @@ jobs:
       - name: Checkout performance tooling
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          submodules: recursive
           repository: ${{ needs.request.outputs.head_repository }}
           ref: ${{ needs.request.outputs.head_sha }}
           persist-credentials: false
@@ -142,12 +143,14 @@ jobs:
       - name: Checkout base
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          submodules: recursive
           ref: ${{ needs.prepare.outputs.base_sha }}
           path: base
           persist-credentials: false
       - name: Checkout head
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          submodules: recursive
           repository: ${{ needs.prepare.outputs.head_repository }}
           ref: ${{ needs.prepare.outputs.head_sha }}
           path: head
@@ -202,6 +205,7 @@ jobs:
       - name: Checkout measurement controller
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          submodules: recursive
           repository: ${{ needs.prepare.outputs.head_repository }}
           ref: ${{ env.HEAD_SHA }}
           persist-credentials: false
@@ -285,12 +289,14 @@ jobs:
       - name: Checkout base
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          submodules: recursive
           ref: ${{ needs.prepare.outputs.base_sha }}
           path: base
           persist-credentials: false
       - name: Checkout head
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          submodules: recursive
           repository: ${{ needs.prepare.outputs.head_repository }}
           ref: ${{ needs.prepare.outputs.head_sha }}
           path: head
@@ -344,6 +350,7 @@ jobs:
       - name: Checkout measurement controller
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          submodules: recursive
           repository: ${{ needs.prepare.outputs.head_repository }}
           ref: ${{ env.HEAD_SHA }}
           persist-credentials: false
@@ -416,6 +423,7 @@ jobs:
       - name: Checkout report tooling
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          submodules: recursive
           repository: ${{ needs.prepare.outputs.head_repository }}
           ref: ${{ needs.prepare.outputs.head_sha }}
           persist-credentials: false

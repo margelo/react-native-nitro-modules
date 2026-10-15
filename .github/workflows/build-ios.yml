@@ -5,6 +5,9 @@ on:
     branches:
       - main
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - '.github/workflows/build-ios.yml'
       - 'apps/example/ios/**'
       - '**/nitrogen/generated/shared/**'
@@ -21,6 +24,9 @@ on:
       - '**/nitro.json'
   pull_request:
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - '.github/workflows/build-ios.yml'
       - 'apps/example/ios/**'
       - '**/nitrogen/generated/shared/**'
@@ -53,6 +59,8 @@ jobs:
             use_frameworks: ""   # intentionally unset
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - uses: oven-sh/setup-bun@v2
 
       - name: Set USE_FRAMEWORKS

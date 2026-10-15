@@ -42,12 +42,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/margelo/nitro.git"
+    "url": "git+https://github.com/margelo/react-native-nitro-modules.git"
   },
   "author": "Marc Rousavy <me@mrousavy.com> (https://github.com/mrousavy)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/margelo/nitro/issues"
+    "url": "https://github.com/margelo/react-native-nitro-modules/issues"
   },
   "homepage": "https://nitro.margelo.com/docs/getting-started/how-to-build-a-nitro-module",
   "publishConfig": {

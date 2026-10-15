@@ -211,7 +211,7 @@ as its avatar. The app needs no hosted service or webhook receiver; Actions
 creates short-lived installation tokens for the request acknowledgment and report
 publication in separate jobs that never execute PR code.
 
-To configure it on `margelo/nitro`:
+To configure it on `margelo/react-native-nitro-modules`:
 
 1. Register a GitHub App named `Nitro Modules Bot` with homepage
    `https://nitro.margelo.com`. Disable webhooks and grant only the repository
@@ -222,7 +222,7 @@ To configure it on `margelo/nitro`:
    Keep installation restricted to the owning account when the app belongs to
    `margelo`.
 2. Upload the NOS image under the app's Display information and install the app
-   on only `margelo/nitro`.
+   on only `margelo/react-native-nitro-modules`.
 3. Generate an app private key and save its PEM contents in the repository's
    Actions secret `NITRO_PERFORMANCE_APP_PRIVATE_KEY`. Keep the key out of git.
 4. Set the repository Actions variable `NITRO_PERFORMANCE_APP_CLIENT_ID` to the

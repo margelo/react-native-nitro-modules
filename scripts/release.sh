@@ -1,20 +1,15 @@
 #!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
 
-set -e
+# The release version comes from the pinned core commit.
+git diff --exit-code HEAD
+git -C core diff --exit-code HEAD
+node scripts/update-core-version.mjs --check
+bun install --frozen-lockfile
+bun run build
 
-echo "Starting the release process..."
-echo "Provided options: $@"
-
-echo "Publishing 'react-native-nitro-modules' to NPM"
-cd packages/react-native-nitro-modules
-bun release $@
-
-echo "Publishing 'nitrogen' to NPM"
-cd ../nitrogen
-bun release $@
-
-echo "Creating a Git bump commit and GitHub release"
-cd ../..
-bun run release-it $@
-
-echo "Successfully released Nitro!"
+version=$(node -p "require('./packages/react-native-nitro-modules/package.json').version")
+echo "Publishing react-native-nitro-modules $version"
+# Publish only the RN package. Nitrogen is released from margelo/nitro.
+(cd packages/react-native-nitro-modules && npm publish "$@")

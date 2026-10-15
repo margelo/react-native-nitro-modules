@@ -16,7 +16,7 @@ import TabItem from '@theme/TabItem';
 
 # Running the Example app
 
-This guide will help you understand the [Nitro Example app](https://github.com/margelo/nitro/tree/main/example)'s role, and teach you how to run it both in debug and in release.
+This guide will help you understand the [Nitro Example app](https://github.com/margelo/react-native-nitro-modules/tree/main/apps/example)'s role, and teach you how to run it both in debug and in release.
 
 ## The Example app's purpose
 
@@ -39,7 +39,7 @@ These should allow you to test all Nitro features in a single app, which is usef
 
 ## Run the pre-built example app (release)
 
-Each release of Nitro contains a pre-built release version of the [Nitro Example app](https://github.com/margelo/nitro/tree/main/example). You can download the pre-built `.app`/`.apk` from [the latest Nitro release](https://github.com/margelo/nitro/releases/latest), and run it on your iOS Simulator, or Android Simulator/Device.
+Each release of Nitro contains a pre-built release version of the [Nitro Example app](https://github.com/margelo/react-native-nitro-modules/tree/main/apps/example). You can download the pre-built `.app`/`.apk` from [the latest Nitro release](https://github.com/margelo/react-native-nitro-modules/releases/latest), and run it on your iOS Simulator, or Android Simulator/Device.
 
 ### iOS
 
@@ -81,16 +81,16 @@ Then, simply clone (potentially also fork?) the Nitro repository and install its
   <TabItem value="macos" label="macOS" default>
 
     ```sh
-    git clone https://github.com/margelo/nitro
-    cd nitro
-    bun bootstrap
+    git clone https://github.com/margelo/react-native-nitro-modules
+    cd react-native-nitro-modules
+    bun bootstrap:ios
     ```
 
     #### iOS
 
     To run the iOS app of Nitro Example, open `apps/example/ios/NitroExample.xcworkspace` in Xcode, and hit run.
 
-    The `bun bootstrap` command should have ensured that Pods are installed.
+    The `bun bootstrap:ios` command installs the pinned core sources, workspace dependencies, and Pods.
 
     #### Android
 
@@ -106,10 +106,9 @@ Then, simply clone (potentially also fork?) the Nitro repository and install its
   <TabItem value="other" label="Windows/Linux">
 
     ```sh
-    git clone https://github.com/margelo/nitro
-    cd nitro
-    bun i
-    bun run build
+    git clone https://github.com/margelo/react-native-nitro-modules
+    cd react-native-nitro-modules
+    bun bootstrap
     ```
 
     #### Android
@@ -127,7 +126,7 @@ Then, simply clone (potentially also fork?) the Nitro repository and install its
 
 ### Reproducing bugs
 
-In addition to `packages/nitrogen` ([nitrogen](../concepts/nitrogen) CLI) and `packages/react-native-nitro-modules` ([Nitro Modules](../concepts/nitro-modules) core), the nitro repository also contains two testing libraries;
+In addition to `core/packages/nitrogen` ([nitrogen](../concepts/nitrogen) CLI) and `packages/react-native-nitro-modules` ([Nitro Modules](../concepts/nitro-modules) core), the React Native repository also contains two testing libraries;
 
 - `packages/react-native-nitro-test`: Contains a lot of tests for C++/Swift/Kotlin Hybrid Objects, functions and types.
 - `packages/react-native-nitro-test-external`: Contains a Hybrid Object that is used in `react-native-nitro-test` to test cross-library-imports.

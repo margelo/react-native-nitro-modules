@@ -24,6 +24,9 @@ on:
     branches:
       - main
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - ".github/workflows/harness-android.yml"
       - "apps/example/android/**"
       - "**/nitrogen/generated/shared/**"
@@ -46,6 +49,9 @@ on:
       - "apps/example/rn-harness.config.mjs"
   pull_request:
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - ".github/workflows/harness-android.yml"
       - "apps/example/android/**"
       - "**/nitrogen/generated/shared/**"
@@ -99,6 +105,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          submodules: recursive
           fetch-depth: 1
 
       - name: Reclaim disk space

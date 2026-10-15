@@ -108,13 +108,13 @@ const jsonLd = {
       description: tagline,
       url: homeUrl,
       sameAs: [
-        'https://github.com/margelo/nitro',
+        'https://github.com/margelo/react-native-nitro-modules',
         'https://www.npmjs.com/package/react-native-nitro-modules',
         'https://www.npmjs.com/package/nitrogen',
       ],
       applicationCategory: 'DeveloperApplication',
       operatingSystem: 'iOS, Android',
-      codeRepository: 'https://github.com/margelo/nitro',
+      codeRepository: 'https://github.com/margelo/react-native-nitro-modules',
       programmingLanguage: ['C++', 'Swift', 'Kotlin', 'TypeScript'],
       license: 'https://opensource.org/licenses/MIT',
       author: { '@id': marcId },
@@ -143,7 +143,7 @@ const config: Config = {
 
   // GitHub pages deployment config.
   organizationName: 'margelo',
-  projectName: 'nitro',
+  projectName: 'react-native-nitro-modules',
   trailingSlash: false,
   onBrokenLinks: 'throw',
   onBrokenAnchors: 'throw',
@@ -285,12 +285,12 @@ const config: Config = {
           position: 'right',
         },
         {
-          href: 'https://github.com/margelo/nitro/releases/latest',
+          href: 'https://github.com/margelo/react-native-nitro-modules/releases/latest',
           label: 'Latest Release',
           position: 'right',
         },
         {
-          href: 'https://github.com/margelo/nitro',
+          href: 'https://github.com/margelo/react-native-nitro-modules',
           label: 'GitHub',
           position: 'right',
         },

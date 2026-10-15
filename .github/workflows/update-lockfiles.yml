@@ -5,9 +5,15 @@ on:
     branches:
       - main
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - ".github/workflows/update-lockfiles.yml"
   pull_request:
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - ".github/workflows/update-lockfiles.yml"
       - "package.json"
       - "**/package.json"
@@ -23,6 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          submodules: recursive
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.ref }}
 

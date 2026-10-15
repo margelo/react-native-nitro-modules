@@ -1,0 +1,59 @@
+# Repository split
+
+The complete Nitro baseline is preserved on this repository's `main` branch at `d498e237e9b4117c4abe38c023adf486c75f856a`. Its tracked-tree hash is `d5e639fb4d492f433ff70b25ec59ccf4a130a3fc`, identical to upstream Nitro. The baseline and its Git history were pushed here before the core repository was restructured. Both repositories implement the split on `core-split`; no changes were imported from `react-nitro`.
+
+## Source ownership
+
+The `core` submodule pins Nitro commit `30c1e7abc7912d291086f6cbc829cd55c76bbfdb`. Its `branch = core-split` setting helps development; builds never follow that branch automatically.
+
+- Nitro owns the native runtime and JS/TS implementation in `packages/react-native-nitro-modules/{cpp,ios,android/src,src}`, plus `packages/nitrogen`.
+- This repository owns the published `react-native-nitro-modules` package metadata, CocoaPods/Gradle/CMake integration, codegen configuration, apps, integration tests, fixtures, templates, docs, and performance tooling.
+- `bun sync-core` copies tracked implementation files and the MIT license into the existing runtime package paths. It checks the pinned commit and matching versions, removes stale files only within its four output directories, and ignores checkout caches. Generated copies are not tracked here. Native formatters and the runtime lint command edit the authoritative core sources.
+
+The runtime implementation is byte-for-byte unchanged from the baseline. Nitrogen's only source change is the template repository URL. Public package names, module names, namespaces, view generation, Fabric support, worklets, registration, and generated APIs remain unchanged.
+
+## Bootstrap, update, and release
+
+```sh
+# Clean checkout, including the pinned submodule, dependency install and build:
+bun bootstrap
+# Optional macOS Ruby dependencies and example CocoaPods setup:
+bun bootstrap:ios
+# Stage local tracked core edits and regenerate existing fixtures:
+bun sync-core
+bun specs
+```
+
+Build shared sources and Nitrogen in the Nitro checkout with `bun bootstrap` and `bun typecheck`. Commit and push core changes before recording them here:
+
+```sh
+git -C core fetch origin
+git -C core checkout <pushed-core-sha>
+git add core
+bun update-core-version
+bun install
+bun specs
+```
+
+Commit the updated pin, metadata, lockfile, and any intended generated fixture changes here. Normal checkout updates use `git submodule update --init --recursive`, without `--remote`.
+
+For a version change, run `bun version:set <version>` in Nitro first. It updates the authoritative package versions, Nitrogen's runtime dependency, and `NITRO_VERSION`. The wrapper's `bun update-core-version` adopts that version; it never writes a generated native header. See [CONTRIBUTING.md](CONTRIBUTING.md#shared-sources-and-releases) for the full sequence.
+
+Publish `nitrogen` from Nitro and `react-native-nitro-modules` from this repository. The wrapper's `bun release` checks for committed sources and matching versions, builds, and publishes only the RN package. Packing rebuilds the output and rejects uncommitted core sources. No npm packages or release tags were created during this split.
+
+## Package validation
+
+Both packages were packed with `npm pack`, inspected, and installed with ordinary npm lifecycle handling into a fresh temporary consumer outside either repository. The consumer had no core checkout or workspace package symlinks. Existing native test fixtures and the example app supplied the consumer validation cases.
+
+The runtime tarball contains 290 files: actual C++/Swift/Kotlin/JNI/JS sources, CommonJS/ES module output, TypeScript declarations, native build files, the podspec, codegen inputs, README, and license. The Nitrogen tarball contains 297 files: the executable CLI, compiled generator, TypeScript sources, README, and license. Neither includes Git metadata, the core checkout, apps, docs, test fixtures, build caches, `node_modules`, Hermes sources, or external symlinks. npm installation performs no Git fetch or core staging.
+
+## Validation results
+
+- Core build, typecheck, lint, frozen dependency installation, fresh bootstrap, and remote template initialization passed. All six core GitHub Actions workflows passed on the initial split commit; the repository rename only updates links and the template URL. Release version synchronization was exercised in a temporary copy with publication and Git release actions disabled.
+- Wrapper build, all workspace typechecks, lint, docs typecheck/build, and generation passed. A fresh clone completed `bun bootstrap` and `bun specs` with no tracked changes and a working Nitrogen CLI. All 282 generated fixture files matched the baseline, including view bindings and autolinking.
+- All 164 performance-tool tests passed before and after the split. The existing runtime Jest suite passed with its single todo and contains no runtime assertions.
+- Baseline and npm consumer Android `assembleDebug` and iOS arm64 simulator builds passed. These compile the existing view and native registration fixtures using the packed runtime's headers, Prefab library, and CocoaPod.
+- Android API 37 harness tests passed all 564 tests in both baseline and consumer with the existing CI setting `minSdkVersion=26`, including views, HardwareBuffer, and native registration. An initial run with the app default `minSdkVersion=24` produced the same 11 failures in both; no source changes were needed for the CI configuration.
+- iOS 26.5 harness results matched: 563 passed and one failed in both baseline and consumer, with the same `createNativeArrayBuffer` external-memory-pressure assertion. The view suite passed. On iOS 27, the unchanged baseline app aborts in UIKit before tests because of scene-lifecycle adoption. That issue is deferred without changing React Native or the app in this split.
+
+The host's Ruby 4 cannot install the locked Ruby bundle because its locked `minitest` version requires Ruby below 4. Native validation used global CocoaPods 1.17 in temporary fixtures; repository Gemfiles and lockfiles were preserved.

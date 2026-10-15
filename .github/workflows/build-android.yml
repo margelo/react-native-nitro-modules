@@ -5,6 +5,9 @@ on:
     branches:
       - main
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - '.github/workflows/build-android.yml'
       - 'apps/example/android/**'
       - '**/nitrogen/generated/shared/**'
@@ -20,6 +23,9 @@ on:
       - '**/nitro.json'
   pull_request:
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - '.github/workflows/build-android.yml'
       - 'apps/example/android/**'
       - '**/nitrogen/generated/shared/**'
@@ -49,6 +55,8 @@ jobs:
           - '26'
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - uses: oven-sh/setup-bun@v2
 
       - name: Install npm dependencies (bun)

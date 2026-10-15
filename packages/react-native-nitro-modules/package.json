@@ -11,7 +11,9 @@
     "src",
     "!src/__tests__",
     "react-native.config.js",
-    "lib",
+    "lib/commonjs",
+    "lib/module",
+    "lib/typescript",
     "android/build.gradle",
     "android/gradle.properties",
     "android/fix-prefab.gradle",
@@ -19,10 +21,11 @@
     "android/src/",
     "ios/",
     "cpp/",
-    "app.plugin.js",
-    "*.podspec",
     "nitro_pod_utils.rb",
-    "README.md"
+    "README.md",
+    "NitroModules.podspec",
+    "LICENSE",
+    "!lib/typescript/__tests__"
   ],
   "keywords": [
     "react-native",
@@ -47,27 +50,30 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/margelo/nitro.git"
+    "url": "git+https://github.com/margelo/react-native-nitro-modules.git",
+    "directory": "packages/react-native-nitro-modules"
   },
   "author": "Marc Rousavy <me@mrousavy.com> (https://github.com/mrousavy)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/margelo/nitro/issues"
+    "url": "https://github.com/margelo/react-native-nitro-modules/issues"
   },
   "homepage": "https://nitro.margelo.com",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "write-native-version": "version=$(node -p \"require('./package.json').version\") && sed -i '' \"s/#define NITRO_VERSION \\\".*\\\"/#define NITRO_VERSION \\\"$version\\\"/\" ./cpp/utils/NitroDefines.hpp",
+    "write-native-version": "node ../../scripts/update-core-version.mjs --check",
     "postversion": "bun run write-native-version",
-    "build": "rm -rf lib && bun typecheck && bob build",
+    "build": "bun sync-core && rm -rf lib && bun typecheck && bob build",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\" --fix",
+    "lint": "bun --cwd ../../core/packages/react-native-nitro-modules lint && bun sync-core",
     "lint-ci": "eslint \"**/*.{js,ts,tsx}\" -f @jamesacarr/github-actions --max-warnings 0",
     "test": "jest",
     "clean": "rm -rf android/build node_modules/**/android/build lib",
-    "release": "release-it"
+    "release": "../../scripts/release.sh",
+    "sync-core": "node ../../scripts/sync-core.mjs",
+    "prepack": "node ../../scripts/sync-core.mjs --check-clean 1>&2 && bun run build 1>&2"
   },
   "devDependencies": {
     "@types/jest": "*",
@@ -97,19 +103,6 @@
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
     ]
-  },
-  "release-it": {
-    "npm": {
-      "publish": true
-    },
-    "git": false,
-    "github": {
-      "release": false
-    },
-    "hooks": {
-      "before:init": "bun typecheck && bun lint",
-      "after:bump": "bun run build"
-    }
   },
   "react-native-builder-bob": {
     "source": "src",

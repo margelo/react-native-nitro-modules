@@ -68,13 +68,3 @@ updates:
       react:
         patterns:
           - "react"
-
-  - package-ecosystem: "bun"
-    directories:
-      - "/packages/nitrogen/"
-    schedule:
-      interval: "daily"
-    labels:
-      - "nitrogen"
-      - "dependencies"
-      - "typescript"

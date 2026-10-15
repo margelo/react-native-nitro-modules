@@ -5,6 +5,9 @@ on:
     branches:
       - main
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - '.github/workflows/lint-cpp.yml'
       - '**/*.h'
       - '**/*.hpp'
@@ -13,6 +16,9 @@ on:
       - '**/*.mm'
   pull_request:
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - '.github/workflows/lint-cpp.yml'
       - '**/*.h'
       - '**/*.hpp'
@@ -26,11 +32,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - uses: oven-sh/setup-bun@v2
+
+      - name: Stage shared sources
+        run: bun sync-core
 
       - name: Run clang-format
         run: bun run lint-cpp
 
       - name: Verify no files have changed after format
-        run: git diff --exit-code HEAD -- . ':(exclude)bun.lock'
+        run: |
+          git diff --exit-code HEAD -- . ':(exclude)bun.lock'
+          git -C core diff --exit-code HEAD
 

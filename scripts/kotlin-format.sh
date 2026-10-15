@@ -4,7 +4,7 @@ set -e
 
 KOTLIN_DIRS=(
   # react-native-nitro-modules
-  "packages/react-native-nitro-modules/android/src/main/java"
+  "core/packages/react-native-nitro-modules/android/src/main/java"
   # react-native-nitro-test
   "packages/react-native-nitro-test/android/src/main/java"
   # react-native-nitro-test-external

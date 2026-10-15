@@ -8,6 +8,9 @@ on:
     branches:
       - main
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - '.github/workflows/lint-typescript.yml'
       - 'config'
       - '**/*.ts'
@@ -19,6 +22,9 @@ on:
       - '**/package.json'
   pull_request:
     paths:
+      - 'core'
+      - '.gitmodules'
+      - 'scripts/sync-core.mjs'
       - '.github/workflows/lint-typescript.yml'
       - 'config'
       - '**/*.ts'
@@ -35,6 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - uses: oven-sh/setup-bun@v2
 
       - name: Install npm dependencies (bun)
@@ -48,6 +56,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - uses: oven-sh/setup-bun@v2
 
       - name: Install npm dependencies (bun)
@@ -56,8 +66,8 @@ jobs:
       - name: Run ESLint CI in apps/example/
         working-directory: apps/example
         run: bun lint-ci
-      - name: Run ESLint CI in packages/nitrogen
-        working-directory: packages/nitrogen
+      - name: Run ESLint CI in core/packages/nitrogen
+        working-directory: core/packages/nitrogen
         run: bun lint-ci
       - name: Run ESLint CI in packages/react-native-nitro-test-external
         working-directory: packages/react-native-nitro-test-external
@@ -72,8 +82,8 @@ jobs:
       - name: Run ESLint with auto-fix in apps/example/
         working-directory: apps/example
         run: bun lint
-      - name: Run ESLint with auto-fix in packages/nitrogen
-        working-directory: packages/nitrogen
+      - name: Run ESLint with auto-fix in core/packages/nitrogen
+        working-directory: core/packages/nitrogen
         run: bun lint
       - name: Run ESLint with auto-fix in packages/react-native-nitro-test-external
         working-directory: packages/react-native-nitro-test-external
@@ -86,4 +96,6 @@ jobs:
         run: bun lint
 
       - name: Verify no files have changed after auto-fix
-        run: git diff --exit-code HEAD -- . ':(exclude)bun.lock'
+        run: |
+          git diff --exit-code HEAD -- . ':(exclude)bun.lock'
+          git -C core diff --exit-code HEAD

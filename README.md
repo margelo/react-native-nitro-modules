@@ -11,8 +11,8 @@
 **Nitro Modules** are fast, type-safe native modules for React Native with statically compiled bindings to JSI.
 They consist of two parts:
 
-- [**react-native-nitro-modules**](packages/react-native-nitro-modules): The core C++ library powering all nitro modules
-- [**nitrogen**](packages/nitrogen): An optional code-generator for nitro module library authors
+- [**react-native-nitro-modules**](packages/react-native-nitro-modules): The React Native package and native build integration for Nitro Modules
+- [**nitrogen**](core/packages/nitrogen): An optional code-generator for nitro module library authors
 
 ## Example
 
@@ -56,7 +56,7 @@ cd ios && pod install
 - [**Community Discord** 💬](https://margelo.com/discord)
 - [**Nitro Module Builder** AI GPT 🤖](https://chatgpt.com/g/g-6870125d0fcc8191925bd20a02c78bcf-nitro-module-builder)
 - [**How to build a Nitro Module** YouTube Tutorial ▶️](https://youtu.be/528SxTGnIlc?si=IxH7n09ZVe4iwRPv)
-- [**nitrogen**/README.md](./packages/nitrogen/README.md)
+- [**nitrogen**/README.md](./core/packages/nitrogen/README.md)
 - [**react-native-nitro-modules**/README.md](./packages/react-native-nitro-modules/README.md)
 - [**react-native-nitro-test** example module](./packages/react-native-nitro-test/README.md)
 - [`TestObject.nitro.ts` example playground](./packages/react-native-nitro-test/src/specs/TestObject.nitro.ts)
@@ -86,6 +86,10 @@ Nitro is built with ❤️ by Margelo.
 We build fast and beautiful apps. Contact us at [margelo.com](https://margelo.com) for consultancy services.
 
 ## Contributing
+
+This repository owns the React Native package, apps, test modules, docs, and templates. Shared runtime sources and Nitrogen live in [margelo/nitro](https://github.com/margelo/nitro), pinned here by the `core/` submodule.
+
+For a fresh checkout, run `bun bootstrap` to initialize `core/`, install dependencies, and build the workspace. Run `bun bootstrap:ios` to also install the example app's iOS dependencies. Implementation changes belong in `core/`; `bun sync-core` copies them into the React Native package before builds and packing.
 
 Read [CONTRIBUTING.md](./CONTRIBUTING.md) for the contribution flow (PR expectations, the required test-per-fix rule, and the nitrogen workflow). For environment setup and reproduction walkthroughs, see the [contributing guide](https://nitro.margelo.com/docs/resources/contributing) on the docs site.
 

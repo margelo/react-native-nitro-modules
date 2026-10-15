@@ -9,15 +9,16 @@ import TabItem from '@theme/TabItem';
 If you encounter issues with Nitro, want to fix a bug, or reproduce a bug in the example app, you'd need to clone the repo and get it running first.
 
 :::info[Contribution flow and PR rules]
-This page covers **environment setup and reproduction** — how to run Nitro locally. For the contribution flow itself (what PRs we accept, the required test-per-fix rule, the nitrogen workflow, and the PR checklist), see [**CONTRIBUTING.md**](https://github.com/margelo/nitro/blob/main/CONTRIBUTING.md) in the repo root. Read it before opening a PR.
+This page covers **environment setup and reproduction** — how to run Nitro locally. For the contribution flow itself (what PRs we accept, the required test-per-fix rule, the nitrogen workflow, and the PR checklist), see [**CONTRIBUTING.md**](https://github.com/margelo/react-native-nitro-modules/blob/main/CONTRIBUTING.md) in the repo root. Read it before opening a PR.
 :::
 
-The nitro repo is a Bun monorepo, and is set up like this:
+The `react-native-nitro-modules` repository is a Bun monorepo with the shared sources pinned in `core/`:
 
 - `apps/example/`: A react-native app that uses `react-native-nitro-modules` and `react-native-nitro-test`.
+- `core/packages/nitrogen/`: The `nitrogen` CLI, maintained in [margelo/nitro](https://github.com/margelo/nitro).
+- `core/packages/react-native-nitro-modules/`: The shared native and JS/TS implementation.
 - `packages/`
-  - `/nitrogen/`: The Node app that generates Nitro bindings. On npm, it is called `nitrogen`.
-  - `/react-native-nitro-modules/`: The core Nitro Modules library which contains mostly C++ code.
+  - `/react-native-nitro-modules/`: The published React Native package and its native build configuration. Shared implementation files are staged here by `bun sync-core`.
   - `/react-native-nitro-test/`: An example Nitro Module library full of specs used as compile-time and runtime tests.
   - `/react-native-nitro-test-external/`: A second test module used to cover cross-module behavior between Nitro Modules.
   - `/template/`: A template for a Nitro Module library.
@@ -36,15 +37,14 @@ You need:
 
 ### 2. Clone the repo
 
-Clone [margelo/**nitro**](https://github.com/margelo/nitro) using git, and navigate into the `nitro` folder using Terminal.
+Clone [margelo/react-native-nitro-modules](https://github.com/margelo/react-native-nitro-modules) and navigate into the `react-native-nitro-modules` folder.
 
 ### 3. Install dependencies
 
-Using Bun, install all required dependencies:
+Initialize the pinned core submodule, install dependencies, and build the workspace:
 
 ```sh
-bun install
-bun run build
+bun bootstrap
 ```
 
 #### 3.1. (Optional) Install iOS dependencies
@@ -74,6 +74,8 @@ After installing all dependencies, you can run the React Native app in `apps/exa
   </TabItem>
 </Tabs>
 
+Implementation changes belong in `core/packages/react-native-nitro-modules/` or `core/packages/nitrogen/`. Run `bun sync-core` after changing shared sources. See [shared sources and releases](https://github.com/margelo/react-native-nitro-modules/blob/main/CONTRIBUTING.md#shared-sources-and-releases) for the commit and release sequence.
+
 ## Reproduce something in the Nitro Example app
 
 With most issue reports, it is required to reproduce the issue in the Nitro example app (`apps/example/`).
@@ -82,12 +84,12 @@ Usually, you can reproduce issues like this:
 
 1. Fork the repository
 2. Change the code to reproduce the issue
-3. Create a PR to the **nitro** repository which demonstrates the issue
+3. Create a PR to the **react-native-nitro-modules** repository which demonstrates the issue
 
 :::tip[You don't need to ship a fix]
 A PR that **only reproduces the bug** — and makes CI go red — is a completely valid and very welcome contribution. If you can add a minimal failing test (compile error or runtime error caught by the Harness tests) and open a PR with just that, stop there. You don't have to attempt a fix. A clean, 100% deterministic repro pinned in CI is often more valuable than a guessed patch; the actual fix can be taken from there.
 
-See [You don't need to ship a fix](https://github.com/margelo/nitro/blob/main/CONTRIBUTING.md#you-dont-need-to-ship-a-fix--a-clean-repro-is-enough) in `CONTRIBUTING.md` for details and the test-writing rules (reuse existing types, keep it small, don't remove existing tests).
+See [You don't need to ship a fix](https://github.com/margelo/react-native-nitro-modules/blob/main/CONTRIBUTING.md#you-dont-need-to-ship-a-fix--a-clean-repro-is-enough) in `CONTRIBUTING.md` for details and the test-writing rules (reuse existing types, keep it small, don't remove existing tests).
 :::
 
 ### Reproduce a build error
@@ -97,7 +99,7 @@ For example, if you have a different setting in your `Podfile`, try changing it 
 
 ### Reproduce a nitrogen bug
 
-The Nitro `apps/example/` app uses a Nitro Module (`packages/react-native-nitro-test/`) which acts as an example and contains a lot of test code, like `src/specs/TestObject.nitro.ts` ([link](https://github.com/margelo/nitro/blob/main/packages/react-native-nitro-test/src/specs/TestObject.nitro.ts)). If you change something in `TestObject.nitro.ts`, make sure to run nitrogen from the repo root:
+The Nitro `apps/example/` app uses a Nitro Module (`packages/react-native-nitro-test/`) which acts as an example and contains a lot of test code, like `src/specs/TestObject.nitro.ts` ([link](https://github.com/margelo/react-native-nitro-modules/blob/main/packages/react-native-nitro-test/src/specs/TestObject.nitro.ts)). If you change something in `TestObject.nitro.ts`, make sure to run nitrogen from the repo root:
 
 ```sh
 bun specs
@@ -105,11 +107,11 @@ bun specs
 
 Commit the generated files. If that change causes a compile error downstream (e.g. Swift refuses to build the generated code), that's a valid repro on its own — open the PR with the red CI and leave the fix to a maintainer if you don't have one.
 
-When adding a reproduction, follow the rules in [CONTRIBUTING.md](https://github.com/margelo/nitro/blob/main/CONTRIBUTING.md): reuse existing types where possible, don't remove existing test cases, and keep the addition small. Dumping a full user spec into the test module is not the right approach — distill the bug to the minimal type or call that reproduces it.
+When adding a reproduction, follow the rules in [CONTRIBUTING.md](https://github.com/margelo/react-native-nitro-modules/blob/main/CONTRIBUTING.md): reuse existing types where possible, don't remove existing test cases, and keep the addition small. Dumping a full user spec into the test module is not the right approach — distill the bug to the minimal type or call that reproduces it.
 
 ### Reproduce a runtime error
 
-Submit a PR that demonstrates this runtime error or crash in the Nitro `apps/example/` app — ideally with a new assertion in [`apps/example/src/getTests.ts`](https://github.com/margelo/nitro/blob/main/apps/example/src/getTests.ts) so the regression is caught by the Harness CI workflows (iOS and Android). A PR that only adds the failing assertion and makes Harness go red is enough on its own; you don't have to land the fix.
+Submit a PR that demonstrates this runtime error or crash in the Nitro `apps/example/` app — ideally with a new assertion in [`apps/example/src/getTests.ts`](https://github.com/margelo/react-native-nitro-modules/blob/main/apps/example/src/getTests.ts) so the regression is caught by the Harness CI workflows (iOS and Android). A PR that only adds the failing assertion and makes Harness go red is enough on its own; you don't have to land the fix.
 
 ## Performance tests
 
@@ -119,7 +121,7 @@ The bot acknowledges it with 👍, updates the PR's `Nitro Performance` status, 
 results or a failure link. Contributors without write access can ask a maintainer
 to run it, including for PRs from forks.
 
-See [Performance tests in CONTRIBUTING.md](https://github.com/margelo/nitro/blob/main/CONTRIBUTING.md#performance-tests)
+See [Performance tests in CONTRIBUTING.md](https://github.com/margelo/react-native-nitro-modules/blob/main/CONTRIBUTING.md#performance-tests)
 for repeat runs and measurement-only retries.
 
 ## Run Nitro Docs
