@@ -151,6 +151,18 @@ jobs:
           app: android/app/build/outputs/apk/debug/app-debug.apk
           packageManager: bun
 
+      - name: Print native crash reports
+        if: failure()
+        working-directory: apps/example
+        shell: bash
+        run: |
+          [ -d .harness/crash-reports ] || exit 0
+          find .harness/crash-reports -type f | sort | while read -r report; do
+            echo "::group::$report"
+            cat "$report"
+            echo "::endgroup::"
+          done
+
       # Gradle cache doesn't like daemons
       - name: Stop Gradle Daemon
         working-directory: apps/example/android

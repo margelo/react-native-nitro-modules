@@ -186,6 +186,22 @@ jobs:
           app: ios/build/Build/Products/Debug-iphonesimulator/NitroExample.app
           packageManager: bun
 
+      - name: Print native crash reports
+        if: failure()
+        working-directory: apps/example
+        shell: bash
+        run: |
+          # Harness only extracts crash logs it classifies as native crashes,
+          # so also print the simulator's own crash reports.
+          {
+            [ -d .harness/crash-reports ] && find .harness/crash-reports -type f
+            find ~/Library/Logs/DiagnosticReports -name 'NitroExample*.ips' 2>/dev/null
+          } | sort | while read -r report; do
+            echo "::group::$report"
+            cat "$report"
+            echo "::endgroup::"
+          done
+
       - name: Check TSan reports
         if: always() && matrix.sanitizer.name == 'TSan'
         shell: bash

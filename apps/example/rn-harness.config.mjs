@@ -6,6 +6,7 @@ import {
   applePlatform,
   appleSimulator,
 } from '@react-native-harness/platform-apple'
+import { runningTestPlugin } from './harness-running-test-plugin.mjs'
 
 const config = {
   entryPoint: './index.js',
@@ -32,6 +33,7 @@ const config = {
     }),
   ],
   defaultRunner: 'android',
+  plugins: [runningTestPlugin()],
   resetEnvironmentBetweenTestFiles: 'runtime',
   // Harness has no per-test timeout, and the async HybridObject stress test
   // (__tests__/stress.harness.ts) can take up to two minutes under sanitizers.
