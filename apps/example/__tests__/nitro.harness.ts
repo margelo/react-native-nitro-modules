@@ -1,5 +1,13 @@
-import { describe, it } from 'react-native-harness'
-import { NitroModules } from 'react-native-nitro-modules'
+import { describe, expect, it } from 'react-native-harness'
+import {
+  getHybridObjectConstructor,
+  NitroModules,
+} from 'react-native-nitro-modules'
+import {
+  getHybridObjectConstructor as getCoreHybridObjectConstructor,
+  getInstalledNitro,
+  NitroModules as CoreNitroModules,
+} from 'nitro-core'
 import type {
   TestObjectCpp,
   TestObjectSwiftKotlin,
@@ -29,6 +37,14 @@ const testObjectSwiftKotlin =
   NitroModules.createHybridObject<TestObjectSwiftKotlin>(
     'TestObjectSwiftKotlin'
   )
+
+describe('nitro-core integration', () => {
+  it('shares the installed native proxy and constructor helper with React Native', () => {
+    expect(getInstalledNitro()).toBe(NitroModules)
+    expect(CoreNitroModules).toBe(NitroModules)
+    expect(getCoreHybridObjectConstructor).toBe(getHybridObjectConstructor)
+  })
+})
 
 describe('TestObject (C++)', createTestRunner(testObjectCpp))
 describe('TestObject (Swift/Kotlin)', createTestRunner(testObjectSwiftKotlin))

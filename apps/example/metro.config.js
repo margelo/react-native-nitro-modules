@@ -20,8 +20,12 @@ const config = {
   // We need to make sure that only one version is loaded for peerDependencies
   // So we block them at the root, and alias them to the versions in example's node_modules
   resolver: {
-    // Metro reads the staged package, so exclude the second source tree.
-    blockList: [new RegExp(`^${corePath}[/\\\\].*`)],
+    // Native sources are staged in the RN package. Only nitro-core is a JS workspace.
+    blockList: [
+      new RegExp(
+        `^${corePath}[/\\\\](?!packages(?:[/\\\\]nitro-core(?:[/\\\\]|$)|$)).*`
+      ),
+    ],
     extraNodeModules: modules.reduce((acc, name) => {
       acc[name] = path.join(__dirname, 'node_modules', name)
       return acc

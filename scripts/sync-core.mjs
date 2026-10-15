@@ -16,7 +16,7 @@ const submodulePath = 'packages/react-native-nitro-modules/nitro'
 const core = path.join(root, submodulePath)
 const packagePath = 'packages/react-native-nitro-modules'
 // Only these directories and the license are owned by this command.
-const directories = ['cpp', 'ios', 'android/src', 'src']
+const directories = ['cpp', 'ios', 'android/src']
 const git = (cwd, ...args) =>
   execFileSync('git', ['-C', cwd, ...args], { encoding: 'utf8' }).trim()
 const json = (file) => JSON.parse(readFileSync(file, 'utf8'))
@@ -41,20 +41,33 @@ const version = json(path.join(root, packagePath, 'package.json')).version
 const sourceVersion = json(path.join(core, packagePath, 'package.json')).version
 const nitrogen = json(path.join(core, 'packages/nitrogen/package.json'))
 const nitrogenVersion = nitrogen.version
-if (nitrogen.dependencies['react-native-nitro-modules'] !== `^${version}`) {
-  throw new Error('Nitrogen must depend on the matching runtime version.')
+const coreVersion = json(
+  path.join(core, 'packages/nitro-core/package.json')
+).version
+const jsVersion = readFileSync(
+  path.join(core, 'packages/nitro-core/src/version.ts'),
+  'utf8'
+).match(/^export const version = '([^']+)'$/m)?.[1]
+const wrapper = json(path.join(root, packagePath, 'package.json'))
+if (
+  nitrogen.dependencies['nitro-core'] !== `^${version}` ||
+  wrapper.dependencies['nitro-core'] !== version
+) {
+  throw new Error(
+    'Nitrogen and the RN package must depend on the matching nitro-core version.'
+  )
 }
 const nativeVersion = readFileSync(
   path.join(core, packagePath, 'cpp/utils/NitroDefines.hpp'),
   'utf8'
 ).match(/#define NITRO_VERSION "([^"]+)"/)?.[1]
 if (
-  [sourceVersion, nitrogenVersion, nativeVersion].some(
+  [sourceVersion, coreVersion, nitrogenVersion, jsVersion, nativeVersion].some(
     (value) => value !== version
   )
 ) {
   throw new Error(
-    'Wrapper, core, Nitrogen and NITRO_VERSION must match. Run bun update-core-version after pinning the core release commit.'
+    'Wrapper, core, Nitrogen, embedded JS version and NITRO_VERSION must match. Run bun update-core-version after pinning the core release commit.'
   )
 }
 const files = execFileSync(

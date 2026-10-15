@@ -66,9 +66,9 @@
   "scripts": {
     "write-native-version": "node ../../scripts/update-core-version.mjs --check",
     "postversion": "bun run write-native-version",
-    "build": "bun sync-core && rm -rf lib && bun typecheck && bob build",
+    "build": "bun sync-core && bun --cwd nitro/packages/nitro-core build && rm -rf lib && bun typecheck && bob build",
     "typecheck": "tsc --noEmit",
-    "lint": "bun --cwd nitro/packages/react-native-nitro-modules lint && bun sync-core",
+    "lint": "eslint \"**/*.{js,ts,tsx}\" --fix",
     "lint-ci": "eslint \"**/*.{js,ts,tsx}\" -f @jamesacarr/github-actions --max-warnings 0",
     "test": "jest",
     "clean": "rm -rf android/build node_modules/**/android/build lib",
@@ -120,5 +120,8 @@
         }
       ]
     ]
+  },
+  "dependencies": {
+    "nitro-core": "0.37.1"
   }
 }

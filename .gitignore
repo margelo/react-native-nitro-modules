@@ -93,9 +93,8 @@ apps/*/.harness/
 # Claude Code local settings
 .claude/settings.local.json
 
-# Shared implementation staged by bun sync-core. Edit packages/react-native-nitro-modules/nitro/ instead.
+# Native implementation staged by bun sync-core. Edit packages/react-native-nitro-modules/nitro/ instead.
 /packages/react-native-nitro-modules/cpp/
 /packages/react-native-nitro-modules/ios/
 /packages/react-native-nitro-modules/android/src/
-/packages/react-native-nitro-modules/src/
 /packages/react-native-nitro-modules/LICENSE

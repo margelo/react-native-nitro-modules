@@ -9,6 +9,7 @@
   "author": "Marc Rousavy <me@mrousavy.com> (https://github.com/mrousavy)",
   "workspaces": [
     "packages/react-native-nitro-modules",
+    "packages/react-native-nitro-modules/nitro/packages/nitro-core",
     "packages/react-native-nitro-modules/nitro/packages/nitrogen",
     "packages/react-native-nitro-test",
     "packages/react-native-nitro-test-external",
@@ -20,7 +21,7 @@
     "build": "bun sync-core && bun nitro build && bun nitrogen build && bun nitro-test-external build && bun nitro-test build",
     "bootstrap": "git submodule update --init --recursive && bun install",
     "typecheck": "bun --filter=\"**\" typecheck",
-    "lint": "bun nitro lint && bun nitrogen lint && bun nitro-test lint && bun example lint",
+    "lint": "bun nitro-core lint && bun nitro lint && bun nitrogen lint && bun nitro-test lint && bun example lint",
     "lint-cpp": "./scripts/clang-format.sh",
     "lint-swift": "./scripts/swift-format.sh",
     "lint-kotlin": "./scripts/kotlin-format.sh",
@@ -39,7 +40,8 @@
     "benchmark": "bun --cwd apps/benchmark",
     "sync-core": "node scripts/sync-core.mjs",
     "bootstrap:ios": "bun bootstrap && bun example bundle-install && bun example pods",
-    "update-core-version": "node scripts/update-core-version.mjs"
+    "update-core-version": "node scripts/update-core-version.mjs",
+    "nitro-core": "bun --cwd packages/react-native-nitro-modules/nitro/packages/nitro-core"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",

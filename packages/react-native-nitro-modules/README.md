@@ -22,6 +22,8 @@ npm i react-native-nitro-modules
 cd ios && pod install
 ```
 
+The package re-exports the shared `nitro-core` API and installs it into the React Native runtime. Existing imports from `react-native-nitro-modules` remain supported.
+
 ### Inside a nitro module library
 
 If you are building a nitro module yourself, add [react-native-nitro-modules](https://npmjs.org/react-native-nitro-modules) as a `peerDependency` into your library's `package.json`:
@@ -212,7 +214,7 @@ The following C++ / JS types are supported out of the box:
     <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/Promise.kt">Promise&lt;T&gt;</a></code></td>
   </tr>
   <tr>
-    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/src/AnyMap.ts">AnyMap</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/src/AnyMap.ts">AnyMap</a></code></td>
     <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/cpp/core/AnyMap.hpp">AnyMap</a>&gt;</code></td>
     <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/ios/core/AnyMap.swift">AnyMap</a></code></td>
     <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/AnyMap.kt">AnyMap</a></code></td>
@@ -230,7 +232,7 @@ The following C++ / JS types are supported out of the box:
     <td><code>java.time.Instant</code></td>
   </tr>
   <tr>
-    <td>..any <code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/src/HybridObject.ts">HybridObject</a></code></td>
+    <td>..any <code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/src/HybridObject.ts">HybridObject</a></code></td>
     <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/cpp/core/HybridObject.hpp">HybridObject</a>&gt;</code></td>
     <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/ios/core/HybridObject.swift">HybridObject</a></code></td>
     <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/HybridObject.kt">HybridObject</a></code></td>
