@@ -28,7 +28,7 @@
     "react-native-nitro-test-external": "*",
     "react-native-nitro-modules": "*",
     "react-native-safe-area-context": "^5.8.0",
-    "react-native-screens": "^4.25.2",
+    "react-native-screens": "^4.29.0",
     "nitro-core": "0.37.1"
   },
   "devDependencies": {
