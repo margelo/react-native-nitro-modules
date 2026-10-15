@@ -1,5 +1,5 @@
 import type { HybridObject } from 'nitro-core'
-import { NitroModules } from '../NitroModules'
+import { NitroModules } from '../turbomodule/NativeNitroModules'
 
 export function installWorkletsSupport() {
   try {
