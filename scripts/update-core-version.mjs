@@ -5,36 +5,31 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (file) => JSON.parse(readFileSync(path.join(root, file), 'utf8'))
 const version = read(
-  'packages/react-native-nitro-modules/nitro/packages/nitro-core/package.json'
+  'packages/react-native-nitro-modules/nitro/nitro-core/package.json'
 ).version
 const nitrogen = read(
-  'packages/react-native-nitro-modules/nitro/packages/nitrogen/package.json'
+  'packages/react-native-nitro-modules/nitro/nitrogen/package.json'
 )
 const nitrogenVersion = nitrogen.version
 if (nitrogen.dependencies['nitro-core'] !== `^${version}`) {
   throw new Error('Nitrogen must depend on the matching nitro-core version.')
 }
-const nativePackageVersion = read(
-  'packages/react-native-nitro-modules/nitro/packages/react-native-nitro-modules/package.json'
-).version
 const jsVersion = readFileSync(
   path.join(
     root,
-    'packages/react-native-nitro-modules/nitro/packages/nitro-core/src/version.ts'
+    'packages/react-native-nitro-modules/nitro/nitro-core/js/version.ts'
   ),
   'utf8'
 ).match(/^export const version = '([^']+)'$/m)?.[1]
 const nativeVersion = readFileSync(
   path.join(
     root,
-    'packages/react-native-nitro-modules/nitro/packages/react-native-nitro-modules/cpp/utils/NitroDefines.hpp'
+    'packages/react-native-nitro-modules/nitro/nitro-core/cpp/utils/NitroDefines.hpp'
   ),
   'utf8'
 ).match(/#define NITRO_VERSION "([^"]+)"/)?.[1]
 if (
-  [nitrogenVersion, nativePackageVersion, jsVersion, nativeVersion].some(
-    (value) => value !== version
-  )
+  [nitrogenVersion, jsVersion, nativeVersion].some((value) => value !== version)
 ) {
   throw new Error(
     'Update the authoritative package versions, embedded JS version and NITRO_VERSION in nitro first, then commit and pin that core revision.'

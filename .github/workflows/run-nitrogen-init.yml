@@ -40,4 +40,4 @@ jobs:
 
       - name: Run nitrogen init outside the repository
         working-directory: ${{ runner.temp }}
-        run: node "$GITHUB_WORKSPACE/packages/react-native-nitro-modules/nitro/packages/nitrogen/lib/index.js" init react-native-math
+        run: node "$GITHUB_WORKSPACE/packages/react-native-nitro-modules/nitro/nitrogen/lib/index.js" init react-native-math

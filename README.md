@@ -12,7 +12,7 @@
 They consist of two parts:
 
 - [**react-native-nitro-modules**](packages/react-native-nitro-modules): The React Native package and native build integration for Nitro Modules
-- [**nitrogen**](https://github.com/margelo/nitro/tree/core-split/packages/nitrogen): An optional code-generator for nitro module library authors
+- [**nitrogen**](https://github.com/margelo/nitro/tree/core-split/nitrogen): An optional code-generator for nitro module library authors
 
 ## Example
 
@@ -56,7 +56,7 @@ cd ios && pod install
 - [**Community Discord** 💬](https://margelo.com/discord)
 - [**Nitro Module Builder** AI GPT 🤖](https://chatgpt.com/g/g-6870125d0fcc8191925bd20a02c78bcf-nitro-module-builder)
 - [**How to build a Nitro Module** YouTube Tutorial ▶️](https://youtu.be/528SxTGnIlc?si=IxH7n09ZVe4iwRPv)
-- [**nitrogen**/README.md](https://github.com/margelo/nitro/blob/core-split/packages/nitrogen/README.md)
+- [**nitrogen**/README.md](https://github.com/margelo/nitro/blob/core-split/nitrogen/README.md)
 - [**react-native-nitro-modules**/README.md](./packages/react-native-nitro-modules/README.md)
 - [**react-native-nitro-test** example module](./packages/react-native-nitro-test/README.md)
 - [`TestObject.nitro.ts` example playground](./packages/react-native-nitro-test/src/specs/TestObject.nitro.ts)
@@ -89,7 +89,7 @@ We build fast and beautiful apps. Contact us at [margelo.com](https://margelo.co
 
 This repository owns the React Native package, apps, test modules, docs, and templates. Shared runtime sources and Nitrogen live in [margelo/nitro](https://github.com/margelo/nitro), pinned here by the `packages/react-native-nitro-modules/nitro/` submodule.
 
-For a fresh checkout, run `bun bootstrap` to initialize `packages/react-native-nitro-modules/nitro/`, install dependencies, and build the workspace. Run `bun bootstrap:ios` to also install the example app's iOS dependencies. Implementation changes belong in `packages/react-native-nitro-modules/nitro/`; `bun sync-core` copies them into the React Native package before builds and packing.
+For a fresh checkout, run `bun bootstrap` to initialize `packages/react-native-nitro-modules/nitro/`, install dependencies, and build the workspace. Run `bun bootstrap:ios` to also install the example app's iOS dependencies. Shared implementation changes belong in `packages/react-native-nitro-modules/nitro/nitro-core/`; `bun sync-core` copies its native sources into the React Native package before builds and packing. Shared JS/TS comes from the `nitro-core` dependency. RN bootstrap, views, and worklets integration remain in this repository.
 
 Read [CONTRIBUTING.md](./CONTRIBUTING.md) for the contribution flow (PR expectations, the required test-per-fix rule, and the nitrogen workflow). For environment setup and reproduction walkthroughs, see the [contributing guide](https://nitro.margelo.com/docs/resources/contributing) on the docs site.
 

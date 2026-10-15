@@ -21,11 +21,7 @@ const config = {
   // So we block them at the root, and alias them to the versions in example's node_modules
   resolver: {
     // Native sources are staged in the RN package. Only nitro-core is a JS workspace.
-    blockList: [
-      new RegExp(
-        `^${corePath}[/\\\\](?!packages(?:[/\\\\]nitro-core(?:[/\\\\]|$)|$)).*`
-      ),
-    ],
+    blockList: [new RegExp(`^${corePath}[/\\\\](?!nitro-core(?:[/\\\\]|$)).*`)],
     extraNodeModules: modules.reduce((acc, name) => {
       acc[name] = path.join(__dirname, 'node_modules', name)
       return acc

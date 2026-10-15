@@ -16,11 +16,7 @@ const config = {
   watchFolders: [root],
   resolver: {
     // Native sources are staged in the RN package. Only nitro-core is a JS workspace.
-    blockList: [
-      new RegExp(
-        `^${corePath}[/\\\\](?!packages(?:[/\\\\]nitro-core(?:[/\\\\]|$)|$)).*`
-      ),
-    ],
+    blockList: [new RegExp(`^${corePath}[/\\\\](?!nitro-core(?:[/\\\\]|$)).*`)],
   },
 }
 

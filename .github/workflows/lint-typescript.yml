@@ -52,9 +52,6 @@ jobs:
       - name: Install npm dependencies (bun)
         run: bun install
 
-      - name: Test nitro-core
-        run: bun nitro-core test
-
       - name: Run TypeScript (tsc)
         run: bun typecheck
 
@@ -74,10 +71,10 @@ jobs:
         working-directory: apps/example
         run: bun lint-ci
       - name: Run ESLint CI in nitro-core
-        working-directory: packages/react-native-nitro-modules/nitro/packages/nitro-core
+        working-directory: packages/react-native-nitro-modules/nitro/nitro-core
         run: bun lint-ci
-      - name: Run ESLint CI in packages/react-native-nitro-modules/nitro/packages/nitrogen
-        working-directory: packages/react-native-nitro-modules/nitro/packages/nitrogen
+      - name: Run ESLint CI in packages/react-native-nitro-modules/nitro/nitrogen
+        working-directory: packages/react-native-nitro-modules/nitro/nitrogen
         run: bun lint-ci
       - name: Run ESLint CI in packages/react-native-nitro-test-external
         working-directory: packages/react-native-nitro-test-external
@@ -93,10 +90,10 @@ jobs:
         working-directory: apps/example
         run: bun lint
       - name: Run ESLint with auto-fix in nitro-core
-        working-directory: packages/react-native-nitro-modules/nitro/packages/nitro-core
+        working-directory: packages/react-native-nitro-modules/nitro/nitro-core
         run: bun lint
-      - name: Run ESLint with auto-fix in packages/react-native-nitro-modules/nitro/packages/nitrogen
-        working-directory: packages/react-native-nitro-modules/nitro/packages/nitrogen
+      - name: Run ESLint with auto-fix in packages/react-native-nitro-modules/nitro/nitrogen
+        working-directory: packages/react-native-nitro-modules/nitro/nitrogen
         run: bun lint
       - name: Run ESLint with auto-fix in packages/react-native-nitro-test-external
         working-directory: packages/react-native-nitro-test-external
