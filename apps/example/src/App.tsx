@@ -6,7 +6,9 @@ import { useColors } from './useColors'
 import { Image } from 'react-native'
 import { ViewScreen } from './screens/ViewScreen'
 import { EvalScreen } from './screens/EvalScreen'
+import { TestsScreen } from './screens/TestsScreen'
 
+const dna = require('./img/dna.png')
 const map = require('./img/map.png')
 const terminal = require('./img/terminal.webp')
 
@@ -23,6 +25,20 @@ export default function App() {
           tabBarStyle: { backgroundColor: colors.background },
         }}
       >
+        <Tabs.Screen
+          name="Tests"
+          component={TestsScreen}
+          options={{
+            tabBarLabel: 'Tests',
+            tabBarIcon: ({ size, color }) => (
+              <Image
+                source={dna}
+                tintColor={color}
+                style={{ width: size * 1.2, height: size * 1.2 }}
+              />
+            ),
+          }}
+        />
         <Tabs.Screen
           name="View"
           component={ViewScreen}

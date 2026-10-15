@@ -86,6 +86,7 @@ The rules from ["Writing good tests"](#writing-good-tests) below still apply to 
 A runtime test lives in one of the [React Native Harness](https://react-native-harness.dev) test files in [apps/example/\_\_tests\_\_/](apps/example/__tests__) (one file per area, e.g. `variants.harness.ts` or `callbacks.harness.ts`) and exercises a spec from [packages/react-native-nitro-test/src/specs/](packages/react-native-nitro-test/src/specs). Tests use `describe`/`it`/`expect` from `react-native-harness`, and `expect` is vitest's, so prefer the specific matcher (`toEqual`, `toContain`, `toThrow('...')`, `rejects`) over `expect(condition).toBe(true)` - a failure then shows the actual values. It runs:
 
 - locally against a built and installed debug app via `bun example test:harness --harnessRunner ios` (or `android`), and
+- in the example app's "Tests" tab (start Metro with `bun example start` and run the app), which runs the same runtime tests one at a time or all at once (UI tests only run through the Harness CLI), and
 - in CI on both iOS and Android via the **Harness** workflows ([harness-ios.yml](.github/workflows/harness-ios.yml), [harness-android.yml](.github/workflows/harness-android.yml)).
 
 Use a runtime test when the bug is about behavior — wrong value returned, wrong lifecycle, wrong threading, a crash, etc.
