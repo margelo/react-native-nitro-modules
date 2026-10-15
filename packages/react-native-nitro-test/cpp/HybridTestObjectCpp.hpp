@@ -27,11 +27,11 @@ protected:
   size_t getExternalMemorySize() noexcept override;
 
 private:
-  double _number;
-  bool _bool;
+  double _number = 0.0;
+  bool _bool = false;
   std::string _string;
-  int64_t _int64Value;
-  uint64_t _uint64Value;
+  int64_t _int64Value = 0;
+  uint64_t _uint64Value = 0;
   NullType _null = nitro::null;
   std::optional<std::string> _optionalString;
   std::variant<nitro::NullType, std::string> _nullableString;
@@ -43,8 +43,8 @@ private:
   std::optional<OldEnum> _optionalOldEnum;
   std::optional<TruckPowertrain> _optionalEnumPlusOne;
   std::optional<std::function<void(double)>> _optionalCallback;
-  bool _hasBooleanWritable;
-  bool _isBooleanWritable;
+  bool _hasBooleanWritable = false;
+  bool _isBooleanWritable = false;
   std::shared_ptr<Promise<double>> _pendingPromise;
   bool _isolatedBoolean = false;
   std::string _isTextValue;

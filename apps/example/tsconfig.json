@@ -3,7 +3,7 @@
     "@react-native/typescript-config"
   ],
   "compilerOptions": {
-    "types": ["jest"]
+    "types": []
   },
   "include": ["src", "index.js", "__tests__"],
   "exclude": ["**/node_modules", "**/Pods"]

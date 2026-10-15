@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
 import * as React from 'react'
-import { HybridObjectTestsScreen } from './screens/HybridObjectTestsScreen'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { useColors } from './useColors'
@@ -8,7 +7,6 @@ import { Image } from 'react-native'
 import { ViewScreen } from './screens/ViewScreen'
 import { EvalScreen } from './screens/EvalScreen'
 
-const dna = require('./img/dna.png')
 const map = require('./img/map.png')
 const terminal = require('./img/terminal.webp')
 
@@ -25,20 +23,6 @@ export default function App() {
           tabBarStyle: { backgroundColor: colors.background },
         }}
       >
-        <Tabs.Screen
-          name="Tests"
-          component={HybridObjectTestsScreen}
-          options={{
-            tabBarLabel: 'Tests',
-            tabBarIcon: ({ size, color }) => (
-              <Image
-                source={dna}
-                tintColor={color}
-                style={{ width: size * 1.2, height: size * 1.2 }}
-              />
-            ),
-          }}
-        />
         <Tabs.Screen
           name="View"
           component={ViewScreen}

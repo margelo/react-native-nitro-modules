@@ -71,7 +71,7 @@ The RN tarball includes staged native files and its own JS integration. Shared J
 The most useful thing you can contribute for a bug you can't fix yourself is a **PR that makes CI go red**. If you can reproduce your bug inside this repo as:
 
 - a **compile error** — add the minimal spec to [packages/react-native-nitro-test/src/specs/](packages/react-native-nitro-test/src/specs) that causes nitrogen output to fail to build, or
-- a **runtime error** — add the minimal failing assertion to [apps/example/src/getTests.ts](apps/example/src/getTests.ts) so the Harness workflows ([harness-ios.yml](.github/workflows/harness-ios.yml), [harness-android.yml](.github/workflows/harness-android.yml)) catch it,
+- a **runtime error** — add the minimal failing assertion to one of the Harness test files in [apps/example/\_\_tests\_\_/](apps/example/__tests__) so the Harness workflows ([harness-ios.yml](.github/workflows/harness-ios.yml), [harness-android.yml](.github/workflows/harness-android.yml)) catch it,
 
 then open a PR with just that change. Don't attempt a fix. A red CI run that deterministically pins the bug is often more valuable than a guessed patch — once the repro is in, the actual fix can be taken from there.
 
@@ -83,9 +83,9 @@ The rules from ["Writing good tests"](#writing-good-tests) below still apply to 
 
 ### 1. Runtime test
 
-A runtime test lives in [apps/example/src/getTests.ts](apps/example/src/getTests.ts) and exercises a spec from [packages/react-native-nitro-test/src/specs/](packages/react-native-nitro-test/src/specs). It runs:
+A runtime test lives in one of the [React Native Harness](https://react-native-harness.dev) test files in [apps/example/\_\_tests\_\_/](apps/example/__tests__) (one file per area, e.g. `variants.harness.ts` or `callbacks.harness.ts`) and exercises a spec from [packages/react-native-nitro-test/src/specs/](packages/react-native-nitro-test/src/specs). Tests use `describe`/`it`/`expect` from `react-native-harness`, and `expect` is vitest's, so prefer the specific matcher (`toEqual`, `toContain`, `toThrow('...')`, `rejects`) over `expect(condition).toBe(true)` - a failure then shows the actual values. It runs:
 
-- locally in the example app via the "Run Tests" screen / `getTests`, and
+- locally against a built and installed debug app via `bun example test:harness --harnessRunner ios` (or `android`), and
 - in CI on both iOS and Android via the **Harness** workflows ([harness-ios.yml](.github/workflows/harness-ios.yml), [harness-android.yml](.github/workflows/harness-android.yml)).
 
 Use a runtime test when the bug is about behavior — wrong value returned, wrong lifecycle, wrong threading, a crash, etc.
@@ -105,14 +105,14 @@ Tests must be **minimal and non-polluting**:
 - **Reuse existing types.** If `Car`, `Person`, `TestObject`, `Base`, `Child`, etc. already exist in the specs, use them. Don't introduce a parallel `MyBugRepro` struct just for your test.
 - **Add, don't rewrite.** Don't remove or restructure existing specs or test cases — older tests cover older bugs, and removing them drops coverage. Add the smallest new method, property, or assertion that pins your bug.
 - **No spec dumps.** Do not paste a full user-reported spec into the test module to "make it fail". Distill the bug down to the one type or call that actually reproduces it.
-- **One test per bug.** A new assertion in `getTests.ts` or a single new method on an existing spec is usually enough.
+- **One test per bug.** A new assertion in a `__tests__/*.harness.ts` file or a single new method on an existing spec is usually enough.
 
 If a PR adds dozens of new structs, enums, or spec files to reproduce a bug, it will be asked to shrink before review.
 
 ## Workflow for a bug fix
 
 1. **Reproduce the bug** in the example app, ideally by adding a failing test first.
-2. **Add the test** — runtime (`getTests.ts` + a spec addition) or compile-time (a spec addition), per the rules above.
+2. **Add the test** — runtime (a `__tests__/*.harness.ts` test + a spec addition) or compile-time (a spec addition), per the rules above.
 3. **Run nitrogen** to regenerate the native bindings:
    ```sh
    bun specs
@@ -122,15 +122,15 @@ If a PR adds dozens of new structs, enums, or spec files to reproduce a bug, it 
 5. **Verify locally:**
    - `bun run build` — all packages build.
    - `bun typecheck` and `bun lint-all`.
-   - Build and run the example app on iOS and/or Android, and run the tests from the "Run Tests" screen.
+   - Build and install the example app on iOS and/or Android, and run the Harness tests (`bun example test:harness --harnessRunner ios`).
 6. **Open a PR.** Describe the bug, link the issue, and point at the test you added.
 
-For new features, the same flow applies: add the spec, run `bun specs`, implement natively, cover it with a runtime assertion in `getTests.ts` where possible.
+For new features, the same flow applies: add the spec, run `bun specs`, implement natively, cover it with a runtime assertion in `apps/example/__tests__` where possible.
 
 ## What CI runs on your PR
 
 - **Build:** iOS and Android builds of the example app and both test modules.
-- **Harness:** runtime tests from `getTests.ts` executed on iOS and Android.
+- **Harness:** runtime tests from `apps/example/__tests__` executed on iOS and Android.
 - **Lint:** TypeScript, C++ (clang-format), Swift (swift-format), Kotlin (ktlint).
 - **Nitrogen:** regeneration check — generated output must match what's committed.
 
