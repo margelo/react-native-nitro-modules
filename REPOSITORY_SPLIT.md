@@ -6,9 +6,9 @@ The complete Nitro baseline is preserved in this repository's history at `d498e2
 
 The `packages/react-native-nitro-modules/nitro` gitlink records the exact Nitro commit used by this repository. Its `branch = core-split` setting helps development; builds never follow that branch automatically.
 
-- Nitro owns `nitro-core/{android,apple,cpp,js}` and `nitrogen/`. The `nitro-core` npm package contains only shared JS/TS. Native sources still contain React Native-specific code.
+- Nitro owns `packages/nitro-core/{android,apple,cpp,js}` and `packages/nitrogen/`. The `nitro-core` npm package contains only shared JS/TS. Native sources still contain React Native-specific code.
 - This repository owns the published `react-native-nitro-modules` package metadata, RN JS bootstrap, views and worklets integration, CocoaPods/Gradle/CMake integration, codegen configuration, apps, integration tests, fixtures, templates, docs, and performance tooling. It depends on the exact matching `nitro-core` version and re-exports the shared API.
-- `bun sync-core` stages `nitro-core/cpp/`, `nitro-core/apple/`, and `nitro-core/android/src/` into the existing `cpp/`, `ios/`, and `android/src/` paths, along with the MIT license. It checks the pinned commit and matching versions, removes stale files only within its three output directories, and ignores checkout caches. Generated copies are not tracked here. Native formatters edit the authoritative core sources. The wrapper maintains its own `src/` directory; shared JS/TS and Nitrogen run directly from the pinned submodule as workspace packages.
+- `bun sync-core` stages `packages/nitro-core/cpp/`, `packages/nitro-core/apple/`, and `packages/nitro-core/android/src/` into the existing `cpp/`, `ios/`, and `android/src/` paths, along with the MIT license. It checks the pinned commit and matching versions, removes stale files only within its three output directories, and ignores checkout caches. Generated copies are not tracked here. Native formatters edit the authoritative core sources. The wrapper maintains its own `src/` directory; shared JS/TS and Nitrogen run directly from the pinned submodule as workspace packages.
 
 Native implementation sources remain unchanged from the baseline apart from their repository paths. Shared JS/TS now lives in `nitro-core`, which Nitrogen uses instead of depending on the React Native runtime package. Existing RN package and native module names, namespaces, view generation, Fabric support, worklets, registration, and generated APIs remain unchanged.
 
@@ -39,7 +39,7 @@ bun specs
 
 Commit the updated pin, metadata, lockfile, and any intended generated fixture changes here. Normal checkout updates use `git submodule update --init --recursive`, without `--remote`.
 
-For a version change, run `bun version:set <version>` in Nitro first. It updates the authoritative package versions, Nitrogen's `nitro-core` dependency, `nitro-core/js/version.ts`, and `NITRO_VERSION` in `nitro-core/cpp/utils/NitroDefines.hpp`. The wrapper's `bun update-core-version` adopts that version; it never writes a generated native header. See [CONTRIBUTING.md](CONTRIBUTING.md#shared-sources-and-releases) for the full sequence.
+For a version change, run `bun version:set <version>` in Nitro first. It updates the authoritative package versions, Nitrogen's `nitro-core` dependency, `packages/nitro-core/js/version.ts`, and `NITRO_VERSION` in `packages/nitro-core/cpp/utils/NitroDefines.hpp`. The wrapper's `bun update-core-version` adopts that version; it never writes a generated native header. See [CONTRIBUTING.md](CONTRIBUTING.md#shared-sources-and-releases) for the full sequence.
 
 Publish `nitro-core` followed by `nitrogen` from Nitro, then `react-native-nitro-modules` from this repository. The wrapper's `bun release` checks for committed sources and matching versions, builds, and publishes only the RN package. Packing rebuilds the output and rejects uncommitted core sources. No npm packages or release tags were created during this split.
 

@@ -140,14 +140,14 @@
         "react-native": "*",
       },
     },
-    "packages/react-native-nitro-modules/nitro/nitro-core": {
+    "packages/react-native-nitro-modules/nitro/packages/nitro-core": {
       "name": "nitro-core",
       "version": "0.37.1",
       "devDependencies": {
         "react-native-builder-bob": "^0.41.0",
       },
     },
-    "packages/react-native-nitro-modules/nitro/nitrogen": {
+    "packages/react-native-nitro-modules/nitro/packages/nitrogen": {
       "name": "nitrogen",
       "version": "0.37.1",
       "bin": "./lib/index.js",
@@ -3251,9 +3251,9 @@
 
     "nitro": ["nitro@workspace:docs"],
 
-    "nitro-core": ["nitro-core@workspace:packages/react-native-nitro-modules/nitro/nitro-core"],
+    "nitro-core": ["nitro-core@workspace:packages/react-native-nitro-modules/nitro/packages/nitro-core"],
 
-    "nitrogen": ["nitrogen@workspace:packages/react-native-nitro-modules/nitro/nitrogen"],
+    "nitrogen": ["nitrogen@workspace:packages/react-native-nitro-modules/nitro/packages/nitrogen"],
 
     "no-case": ["no-case@3.0.4", "", { "dependencies": { "lower-case": "^2.0.2", "tslib": "^2.0.3" } }, "sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg=="],
 

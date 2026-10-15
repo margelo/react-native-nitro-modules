@@ -17,15 +17,15 @@ const core = path.join(root, submodulePath)
 const packagePath = 'packages/react-native-nitro-modules'
 // Only these directories and the license are owned by this command.
 const directories = [
-  { source: 'nitro-core/cpp', destination: 'cpp' },
-  { source: 'nitro-core/apple', destination: 'ios' },
-  { source: 'nitro-core/android/src', destination: 'android/src' },
+  { source: 'packages/nitro-core/cpp', destination: 'cpp' },
+  { source: 'packages/nitro-core/apple', destination: 'ios' },
+  { source: 'packages/nitro-core/android/src', destination: 'android/src' },
 ]
 const git = (cwd, ...args) =>
   execFileSync('git', ['-C', cwd, ...args], { encoding: 'utf8' }).trim()
 const json = (file) => JSON.parse(readFileSync(file, 'utf8'))
 
-if (!existsSync(path.join(core, 'nitro-core/package.json'))) {
+if (!existsSync(path.join(core, 'packages/nitro-core/package.json'))) {
   throw new Error(
     'Initialize the pinned core checkout first: git submodule update --init --recursive'
   )
@@ -42,11 +42,13 @@ if (process.argv.includes('--check-clean')) {
   })
 }
 const version = json(path.join(root, packagePath, 'package.json')).version
-const nitrogen = json(path.join(core, 'nitrogen/package.json'))
+const nitrogen = json(path.join(core, 'packages/nitrogen/package.json'))
 const nitrogenVersion = nitrogen.version
-const coreVersion = json(path.join(core, 'nitro-core/package.json')).version
+const coreVersion = json(
+  path.join(core, 'packages/nitro-core/package.json')
+).version
 const jsVersion = readFileSync(
-  path.join(core, 'nitro-core/js/version.ts'),
+  path.join(core, 'packages/nitro-core/js/version.ts'),
   'utf8'
 ).match(/^export const version = '([^']+)'$/m)?.[1]
 const wrapper = json(path.join(root, packagePath, 'package.json'))
@@ -59,7 +61,7 @@ if (
   )
 }
 const nativeVersion = readFileSync(
-  path.join(core, 'nitro-core/cpp/utils/NitroDefines.hpp'),
+  path.join(core, 'packages/nitro-core/cpp/utils/NitroDefines.hpp'),
   'utf8'
 ).match(/#define NITRO_VERSION "([^"]+)"/)?.[1]
 if (

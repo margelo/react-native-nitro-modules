@@ -123,8 +123,8 @@ These are all the types Nitro supports out of the box:
   <tr>
     <td><code>(T...) =&gt; R</code></td>
     <td><code>std::function&lt;std::shared_ptr&lt;Promise&lt;R&gt;&gt; (T...)&gt;</code></td>
-    <td><code>@escaping (T...) -&gt; <a href="https://github.com/margelo/nitro/tree/core-split/nitro-core/apple/core/Promise.swift">Promise&lt;R&gt;</a></code></td>
-    <td><code>(T...) -&gt; <a href="https://github.com/margelo/nitro/tree/core-split/nitro-core/android/src/main/java/com/margelo/nitro/core/Promise.kt">Promise&lt;R&gt;</a></code></td>
+    <td><code>@escaping (T...) -&gt; <a href="https://github.com/margelo/nitro/tree/core-split/packages/nitro-core/apple/core/Promise.swift">Promise&lt;R&gt;</a></code></td>
+    <td><code>(T...) -&gt; <a href="https://github.com/margelo/nitro/tree/core-split/packages/nitro-core/android/src/main/java/com/margelo/nitro/core/Promise.kt">Promise&lt;R&gt;</a></code></td>
   </tr>
   <tr>
     <td><code>Sync&lt;(T...) =&gt; R&gt;</code></td>
@@ -146,21 +146,21 @@ These are all the types Nitro supports out of the box:
   </tr>
   <tr>
     <td><code>Promise&lt;T&gt;</code></td>
-    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/cpp/core/Promise.hpp">Promise&lt;T&gt;</a>&gt;</code></td>
-    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/apple/core/Promise.swift">Promise&lt;T&gt;</a></code></td>
-    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/android/src/main/java/com/margelo/nitro/core/Promise.kt">Promise&lt;T&gt;</a></code></td>
+    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/cpp/core/Promise.hpp">Promise&lt;T&gt;</a>&gt;</code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/apple/core/Promise.swift">Promise&lt;T&gt;</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/android/src/main/java/com/margelo/nitro/core/Promise.kt">Promise&lt;T&gt;</a></code></td>
   </tr>
   <tr>
-    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/js/AnyMap.ts">AnyMap</a></code></td>
-    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/cpp/core/AnyMap.hpp">AnyMap</a>&gt;</code></td>
-    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/apple/core/AnyMap.swift">AnyMap</a></code></td>
-    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/android/src/main/java/com/margelo/nitro/core/AnyMap.kt">AnyMap</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/js/AnyMap.ts">AnyMap</a></code></td>
+    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/cpp/core/AnyMap.hpp">AnyMap</a>&gt;</code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/apple/core/AnyMap.swift">AnyMap</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/android/src/main/java/com/margelo/nitro/core/AnyMap.kt">AnyMap</a></code></td>
   </tr>
   <tr>
     <td><code>ArrayBuffer</code></td>
-    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/cpp/core/ArrayBuffer.hpp">ArrayBuffer</a>&gt;</code></td>
-    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/apple/core/ArrayBuffer.swift">ArrayBuffer</a></code></td>
-    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/android/src/main/java/com/margelo/nitro/core/ArrayBuffer.kt">ArrayBuffer</a></code></td>
+    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/cpp/core/ArrayBuffer.hpp">ArrayBuffer</a>&gt;</code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/apple/core/ArrayBuffer.swift">ArrayBuffer</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/android/src/main/java/com/margelo/nitro/core/ArrayBuffer.kt">ArrayBuffer</a></code></td>
   </tr>
   <tr>
     <td><code>Date</code></td>
@@ -169,10 +169,10 @@ These are all the types Nitro supports out of the box:
     <td><code>java.time.Instant</code></td>
   </tr>
   <tr>
-    <td>..any <code><a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/js/HybridObject.ts">HybridObject</a></code></td>
-    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/cpp/core/HybridObject.hpp">HybridObject</a>&gt;</code></td>
-    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/apple/core/HybridObject.swift">HybridObject</a></code></td>
-    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/nitro-core/android/src/main/java/com/margelo/nitro/core/HybridObject.kt">HybridObject</a></code></td>
+    <td>..any <code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/js/HybridObject.ts">HybridObject</a></code></td>
+    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/cpp/core/HybridObject.hpp">HybridObject</a>&gt;</code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/apple/core/HybridObject.swift">HybridObject</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/nitro-core/android/src/main/java/com/margelo/nitro/core/HybridObject.kt">HybridObject</a></code></td>
   </tr>
   <tr>
     <td>..any <code>interface</code></td>

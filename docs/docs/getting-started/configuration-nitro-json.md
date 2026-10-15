@@ -24,7 +24,7 @@ description: Configure nitro.json for a React Native Nitro Module, including C++
 }
 ```
 
-Nitrogen parses this file with Zod, see [`NitroUserConfig.ts`](https://github.com/margelo/nitro/blob/core-split/nitrogen/src/config/NitroUserConfig.ts) for more information.
+Nitrogen parses this file with Zod, see [`NitroUserConfig.ts`](https://github.com/margelo/nitro/blob/core-split/packages/nitrogen/src/config/NitroUserConfig.ts) for more information.
 
 ## `cxxNamespace`
 

@@ -34,7 +34,7 @@
     "lint-ci": "eslint \"**/*.{js,ts,tsx}\" -f @jamesacarr/github-actions --max-warnings 0",
     "build": "tsc",
     "specs": "bun build-nitrogen-first && tsc && nitrogen --logLevel=\"debug\"",
-    "build-nitrogen-first": "node ../../scripts/sync-core.mjs && bun --cwd ../react-native-nitro-modules/nitro/nitro-core build && bun --cwd ../react-native-nitro-modules tsc && bun --cwd ../react-native-nitro-modules/nitro/nitrogen tsc"
+    "build-nitrogen-first": "node ../../scripts/sync-core.mjs && bun --cwd ../react-native-nitro-modules/nitro/packages/nitro-core build && bun --cwd ../react-native-nitro-modules tsc && bun --cwd ../react-native-nitro-modules/nitro/packages/nitrogen tsc"
   },
   "keywords": [
     "react-native",
