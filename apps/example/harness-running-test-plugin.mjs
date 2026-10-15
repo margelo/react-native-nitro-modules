@@ -1,5 +1,8 @@
 import path from 'node:path'
 
+// TODO: Remove this plugin (and its entry in rn-harness.config.mjs) once a
+// react-native-harness release names the running test itself:
+// https://github.com/callstackincubator/react-native-harness/pull/204
 /**
  * When the app crashes or disconnects in the middle of a test file, Harness
  * only reports that the file failed. This plugin also logs which test was
