@@ -1,6 +1,11 @@
 import { expect, it } from 'react-native-harness'
+import { NitroModules } from 'react-native-nitro-modules'
 import { HARDWARE_BUFFER_FORMATS } from './utils/fixtures'
-import { describeEachTestObject } from './utils/testObjects'
+import { itIf } from './utils/helpers'
+import { describeEachTestObject, isKotlin } from './utils/testObjects'
+
+const IS_DEBUG = NitroModules.buildType === 'debug'
+const LARGE_BUFFER_SIZE = 16 * 1024 * 1024
 
 // `createArrayBuffer()` allocates 10 MiB on every platform
 const NATIVE_ARRAY_BUFFER_SIZE = 10 * 1024 * 1024
@@ -23,6 +28,17 @@ function fillTestPattern(array: Uint8Array): number[] {
 
 function bytesAt(array: Uint8Array, indices: number[]): number[] {
   return indices.map((index) => array[index])
+}
+
+/**
+ * Creates a JS ArrayBuffer of {@linkcode size} bytes where byte `i` is `i % 256`.
+ */
+function createCountingBuffer(size: number): ArrayBuffer {
+  const array = new Uint8Array(size)
+  for (let i = 0; i < size; i++) {
+    array[i] = i % 256
+  }
+  return array.buffer
 }
 
 describeEachTestObject('ArrayBuffers', (testObject) => {
@@ -70,6 +86,10 @@ describeEachTestObject('ArrayBuffers', (testObject) => {
     {
       name: 'native buffer',
       create: () => testObject.createArrayBufferFromNativeBuffer(false),
+    },
+    {
+      name: 'NitroModules.createNativeArrayBuffer',
+      create: () => NitroModules.createNativeArrayBuffer(1024),
     },
   ]
   for (const { name, create } of bufferKinds) {
@@ -203,5 +223,140 @@ describeEachTestObject('HardwareBuffers', (testObject) => {
     const copyArray = new Uint8Array(copy)
     expect(copy.byteLength).toBe(original.byteLength)
     expect(copyArray[copyArray.length - 1]).toBe(42)
+  })
+})
+
+describeEachTestObject('ArrayBuffer edge cases', (testObject) => {
+  it('bounceArrayBuffer(empty buffer) returns the same buffer', () => {
+    const empty = new ArrayBuffer(0)
+    expect(testObject.bounceArrayBuffer(empty)).toBe(empty)
+  })
+
+  it('copyBuffer(empty buffer) returns an empty ArrayBuffer', () => {
+    const copy = testObject.copyBuffer(new ArrayBuffer(0))
+    expect(copy).toBeInstanceOf(ArrayBuffer)
+    expect(copy.byteLength).toBe(0)
+  })
+
+  it('getBufferLastItem(1-byte buffer) returns that byte', () => {
+    expect(testObject.getBufferLastItem(new Uint8Array([42]).buffer)).toBe(42)
+  })
+
+  it('setAllValuesTo(1-byte buffer) sets that byte', () => {
+    const array = new Uint8Array(1)
+    testObject.setAllValuesTo(array.buffer, 42)
+    expect(array[0]).toBe(42)
+  })
+
+  for (const value of [0, 127, 128, 255]) {
+    // TODO: Fix HybridTestObjectKotlin.getBufferLastItem - it converts a
+    // signed Kotlin `Byte` to Double, so it returns -128 for 128 and -1 for 255.
+    const isKotlinSignedByte = isKotlin(testObject) && value > 127
+    itIf(!isKotlinSignedByte)(
+      `getBufferLastItem(...) reads ${value} as an unsigned byte`,
+      () => {
+        const array = new Uint8Array([1, 2, value])
+        expect(testObject.getBufferLastItem(array.buffer)).toBe(value)
+      }
+    )
+  }
+
+  for (const value of [0, 128, 255]) {
+    it(`setAllValuesTo(..., ${value}) writes ${value} to every byte`, () => {
+      const array = new Uint8Array(16).fill(7)
+      testObject.setAllValuesTo(array.buffer, value)
+      expect(array).toEqual(new Uint8Array(16).fill(value))
+    })
+  }
+
+  it('copyBuffer(...) copies every byte of an odd-sized buffer', () => {
+    const original = createCountingBuffer(4099)
+    const copy = testObject.copyBuffer(original)
+    expect(copy.byteLength).toBe(original.byteLength)
+    // Compares Uint8Array views - `toEqual` ignores ArrayBuffer contents.
+    expect(new Uint8Array(copy)).toEqual(new Uint8Array(original))
+  })
+
+  it('copyBuffer(16 MiB buffer) keeps its size and bytes', () => {
+    const original = new Uint8Array(LARGE_BUFFER_SIZE)
+    original[0] = 7
+    original[LARGE_BUFFER_SIZE / 2] = 99
+    original[LARGE_BUFFER_SIZE - 1] = 42
+    const copy = new Uint8Array(testObject.copyBuffer(original.buffer))
+    expect(copy.byteLength).toBe(LARGE_BUFFER_SIZE)
+    expect([
+      copy[0],
+      copy[LARGE_BUFFER_SIZE / 2],
+      copy[LARGE_BUFFER_SIZE - 1],
+    ]).toEqual([7, 99, 42])
+  })
+
+  it('getBufferLastItem(view.buffer) reads the whole underlying buffer', () => {
+    // `.buffer` of a view is the entire backing ArrayBuffer, not just the view.
+    const view = new Uint8Array([1, 2, 3, 4]).subarray(0, 2)
+    expect(testObject.getBufferLastItem(view.buffer)).toBe(4)
+  })
+
+  it('createArrayBuffer() returns independent memory every call', () => {
+    const a = new Uint8Array(testObject.createArrayBuffer())
+    const b = new Uint8Array(testObject.createArrayBuffer())
+    a[0] = 1
+    b[0] = 2
+    expect([a[0], b[0]]).toEqual([1, 2])
+  })
+
+  itIf(IS_DEBUG)(
+    'getBufferLastItem(Uint8Array) throws a TypedArray hint',
+    () => {
+      const typedArray = new Uint8Array([1, 2, 3])
+      // @ts-expect-error - a Uint8Array is not an ArrayBuffer
+      const getLastItem = () => testObject.getBufferLastItem(typedArray)
+      expect(getLastItem).toThrow(`${testObject.name}.getBufferLastItem(...)`)
+      expect(getLastItem).toThrow(
+        'Object "1,2,3" is not an ArrayBuffer! Are you maybe passing a TypedArray (e.g. Uint8Array)? Try to pass its `.buffer` value.'
+      )
+    }
+  )
+
+  itIf(IS_DEBUG)('getBufferLastItem({}) throws "is not an ArrayBuffer"', () => {
+    // @ts-expect-error - a plain object is not an ArrayBuffer
+    expect(() => testObject.getBufferLastItem({})).toThrow(
+      'Object "[object Object]" is not an ArrayBuffer!'
+    )
+  })
+
+  itIf(IS_DEBUG)(
+    'getBufferLastItem(number) throws "not even an object"',
+    () => {
+      // @ts-expect-error - a number is not an ArrayBuffer
+      expect(() => testObject.getBufferLastItem(55)).toThrow(
+        `Value "55" is not an ArrayBuffer - in fact, it's not even an object!`
+      )
+    }
+  )
+})
+
+describeEachTestObject('ArrayBuffer identity', (testObject) => {
+  it('bounceArrayBuffers(...) returns the same JS ArrayBuffers', () => {
+    const a = new ArrayBuffer(8)
+    const b = new ArrayBuffer(16)
+    const result = testObject.bounceArrayBuffers([a, b, a])
+    expect(result).toHaveLength(3)
+    expect(result[0]).toBe(a)
+    expect(result[1]).toBe(b)
+    expect(result[2]).toBe(a)
+  })
+
+  it('bounceOptionalWrapper(...) keeps the same JS ArrayBuffer', () => {
+    const buffer = new ArrayBuffer(8)
+    expect(
+      testObject.bounceOptionalWrapper({ optionalArrayBuffer: buffer })
+        .optionalArrayBuffer
+    ).toBe(buffer)
+  })
+
+  it('bounceComplexVariant(...) returns the same JS ArrayBuffer', () => {
+    const buffer = new ArrayBuffer(8)
+    expect(testObject.bounceComplexVariant(buffer)).toBe(buffer)
   })
 })

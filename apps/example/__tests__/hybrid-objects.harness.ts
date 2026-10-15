@@ -1,6 +1,9 @@
 import { expect, it } from 'react-native-harness'
 import { NitroModules } from 'react-native-nitro-modules'
+import { itIf } from './utils/helpers'
 import { describeEachTestObject } from './utils/testObjects'
+
+const IS_DEBUG = NitroModules.buildType === 'debug'
 
 /**
  * Returns the enumerable keys of `object` and its whole prototype chain.
@@ -36,6 +39,23 @@ function findRootPrototype(object: object): object | undefined {
     prototype = Object.getPrototypeOf(prototype)
   }
   return prototype ?? undefined
+}
+
+/**
+ * Returns the property descriptor of {@linkcode key} from {@linkcode object}
+ * or the first prototype that owns it, without invoking a getter.
+ */
+function findPropertyDescriptor(
+  object: object,
+  key: string
+): PropertyDescriptor | undefined {
+  let current: object | null = object
+  while (current != null) {
+    const descriptor = Object.getOwnPropertyDescriptor(current, key)
+    if (descriptor != null) return descriptor
+    current = Object.getPrototypeOf(current)
+  }
+  return undefined
 }
 
 const TEST_OBJECT_PROPERTIES = [
@@ -159,5 +179,202 @@ describeEachTestObject('HybridObject base members', (testObject) => {
     expect(Object.keys(testObject)).toEqual(
       NitroModules.buildType === 'debug' ? ['__type'] : []
     )
+  })
+})
+
+describeEachTestObject('HybridObject members', (testObject) => {
+  it('addNumbers.length is its parameter count', () => {
+    expect(testObject.addNumbers.length).toBe(2)
+  })
+
+  it('addNumbers.name is the method name', () => {
+    expect(testObject.addNumbers.name).toBe('addNumbers')
+  })
+
+  it('methods are enumerable, read-only and not configurable', () => {
+    expect(findPropertyDescriptor(testObject, 'addNumbers')).toMatchObject({
+      value: expect.any(Function),
+      enumerable: true,
+      writable: false,
+      configurable: false,
+    })
+  })
+
+  it('readonly properties only have a getter', () => {
+    expect(findPropertyDescriptor(testObject, 'thisObject')).toMatchObject({
+      get: expect.any(Function),
+      set: undefined,
+      enumerable: true,
+      configurable: false,
+    })
+  })
+
+  it('writable properties have a getter and a setter', () => {
+    expect(findPropertyDescriptor(testObject, 'numberValue')).toMatchObject({
+      get: expect.any(Function),
+      set: expect.any(Function),
+      enumerable: true,
+      configurable: false,
+    })
+  })
+
+  it('property getters read the instance bound to `this`', () => {
+    const other = testObject.newTestObject()
+    other.numberValue = 42
+    testObject.numberValue = 13
+    const getter = findPropertyDescriptor(testObject, 'numberValue')?.get
+    expect(getter?.call(other)).toBe(42)
+  })
+
+  itIf(IS_DEBUG)('__type is "HybridObject<name>" in debug', () => {
+    expect(testObject.__type).toBe(`HybridObject<${testObject.name}>`)
+  })
+
+  itIf(IS_DEBUG)('prototype is frozen in debug', () => {
+    expect(Object.isFrozen(Object.getPrototypeOf(testObject))).toBe(true)
+  })
+})
+
+describeEachTestObject('HybridObject `this` binding', (testObject) => {
+  itIf(IS_DEBUG)(
+    'a destructured method throws because `this` is unbound',
+    () => {
+      const { addNumbers } = testObject
+      expect(() => addNumbers(2, 3)).toThrow('`this` is not bound!')
+    }
+  )
+
+  itIf(IS_DEBUG)('a method called on the prototype throws', () => {
+    const prototype = Object.getPrototypeOf(testObject) as {
+      addNumbers: (a: number, b: number) => number
+    }
+    expect(() => prototype.addNumbers(2, 3)).toThrow(
+      '`this` does not have a NativeState!'
+    )
+  })
+
+  itIf(IS_DEBUG)('a method called on another HybridObject type throws', () => {
+    const base = testObject.createBase()
+    expect(() => testObject.addNumbers.call(base, 2, 3)).toThrow(
+      "`this` has a NativeState, but it's the wrong type!"
+    )
+  })
+})
+
+describeEachTestObject('HybridObject equals()', (testObject) => {
+  it('equals(a HybridObject of another type) is false', () => {
+    expect(testObject.equals(testObject.createBase())).toBe(false)
+  })
+
+  itIf(IS_DEBUG)('equals({}) throws because it has no NativeState', () => {
+    // @ts-expect-error - a plain object is not a HybridObject
+    const equalsPlainObject = () => testObject.equals({})
+    expect(equalsPlainObject).toThrow(`${testObject.name}.equals(...)`)
+    expect(equalsPlainObject).toThrow('It does not have a NativeState!')
+  })
+
+  itIf(IS_DEBUG)('equals(undefined) throws', () => {
+    // @ts-expect-error - undefined is not a HybridObject
+    expect(() => testObject.equals(undefined)).toThrow('It is undefined!')
+  })
+})
+
+describeEachTestObject('HybridObject dispose()', (testObject) => {
+  it('dispose() returns undefined', () => {
+    expect(testObject.newTestObject().dispose()).toBeUndefined()
+  })
+
+  it('dispose() makes isHybridObject(...) false', () => {
+    const object = testObject.newTestObject()
+    object.dispose()
+    expect(NitroModules.isHybridObject(object)).toBe(false)
+  })
+
+  it('dispose() leaves other instances usable', () => {
+    const object = testObject.newTestObject()
+    const other = testObject.newTestObject()
+    object.dispose()
+    expect(other.addNumbers(2, 3)).toBe(5)
+  })
+
+  itIf(IS_DEBUG)('a method call after dispose() throws', () => {
+    const object = testObject.newTestObject()
+    object.dispose()
+    const addNumbers = () => object.addNumbers(2, 3)
+    expect(addNumbers).toThrow(
+      /Cannot call hybrid function `\w+\.addNumbers\(\.\.\.\)`/
+    )
+    expect(addNumbers).toThrow('dispose()')
+  })
+
+  itIf(IS_DEBUG)('a property read after dispose() throws', () => {
+    const object = testObject.newTestObject()
+    object.dispose()
+    const getNumberValue = () => object.numberValue
+    expect(getNumberValue).toThrow(
+      /Cannot get hybrid property `\w+\.numberValue`/
+    )
+    expect(getNumberValue).toThrow('dispose()')
+  })
+
+  itIf(IS_DEBUG)('a property write after dispose() throws', () => {
+    const object = testObject.newTestObject()
+    object.dispose()
+    const setNumberValue = () => {
+      object.numberValue = 5
+    }
+    expect(setNumberValue).toThrow(
+      /Cannot set hybrid property `\w+\.numberValue`/
+    )
+    expect(setNumberValue).toThrow('dispose()')
+  })
+
+  itIf(IS_DEBUG)('name after dispose() throws', () => {
+    const object = testObject.newTestObject()
+    object.dispose()
+    expect(() => object.name).toThrow(
+      'Cannot get hybrid property `HybridObject.name`'
+    )
+  })
+
+  itIf(IS_DEBUG)('toString() after dispose() throws', () => {
+    const object = testObject.newTestObject()
+    object.dispose()
+    expect(() => object.toString()).toThrow(
+      'Cannot call hybrid function `HybridObject.toString(...)`'
+    )
+  })
+
+  itIf(IS_DEBUG)('dispose() twice throws', () => {
+    const object = testObject.newTestObject()
+    object.dispose()
+    expect(() => object.dispose()).toThrow(
+      'Cannot call hybrid function `HybridObject.dispose(...)`'
+    )
+  })
+
+  it('a native reference re-wraps a disposed object in a new JS object', () => {
+    const holder = testObject.newTestObject()
+    const object = testObject.newTestObject()
+    object.numberValue = 42
+    holder.optionalHybrid = object
+    object.dispose()
+    // The native instance is still alive (held by `holder`), but the disposed
+    // JS object dropped its NativeState, so native creates a new JS object.
+    const rewrapped = holder.optionalHybrid
+    expect(rewrapped).not.toBe(object)
+    expect(rewrapped?.numberValue).toBe(42)
+  })
+})
+
+describeEachTestObject('HybridObject identity in containers', (testObject) => {
+  it('bounceHybridObjects(...) keeps the JS identity of every element', () => {
+    const childA = testObject.createChild()
+    const childB = testObject.createChild()
+    const result = testObject.bounceHybridObjects([childA, childB, childA])
+    expect(result).toHaveLength(3)
+    expect(result[0]).toBe(childA)
+    expect(result[1]).toBe(childB)
+    expect(result[2]).toBe(childA)
   })
 })

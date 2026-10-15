@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import { describe } from 'react-native-harness'
 import { NitroModules } from 'react-native-nitro-modules'
 import type {
@@ -47,4 +48,20 @@ export function describeEachTestObject(
       })
     }
   })
+}
+
+/**
+ * Whether `testObject` is the Swift implementation of `TestObjectSwiftKotlin`.
+ */
+export function isSwift(testObject: TestObject): boolean {
+  return testObject.name === 'TestObjectSwiftKotlin' && Platform.OS === 'ios'
+}
+
+/**
+ * Whether `testObject` is the Kotlin implementation of `TestObjectSwiftKotlin`.
+ */
+export function isKotlin(testObject: TestObject): boolean {
+  return (
+    testObject.name === 'TestObjectSwiftKotlin' && Platform.OS === 'android'
+  )
 }
