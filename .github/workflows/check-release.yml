@@ -1,0 +1,39 @@
+name: Check release automation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      [
+        "scripts/*release*",
+        ".github/workflows/*release*",
+        "packages/react-native-nitro-modules/nitro",
+      ]
+  pull_request:
+    paths:
+      [
+        "scripts/*release*",
+        ".github/workflows/*release*",
+        "packages/react-native-nitro-modules/nitro",
+      ]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - run: node --test scripts/find-core-release.test.mjs
+      - run: node --check scripts/release-ci.mjs && bash -n scripts/release.sh
+      - uses: docker://rhysd/actionlint:1.7.12
+        with:
+          # GitHub supports concurrency.queue since May 2026; actionlint 1.7.12 does not yet recognize it.
+          # https://github.blog/changelog/2026-05-07-github-actions-concurrency-groups-now-allow-larger-queues/
+          args: -ignore unexpected.key..queue..for..concurrency..section .github/workflows/release.yml .github/workflows/check-release.yml

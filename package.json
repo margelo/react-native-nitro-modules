@@ -49,9 +49,6 @@
     "@jamesacarr/eslint-formatter-github-actions": "^0.2.0",
     "@react-native/eslint-config": "0.85.3",
     "@react-native/jest-preset": "0.85.3",
-    "@release-it-plugins/workspaces": "^5.0.3",
-    "@release-it/bumper": "^7.0.5",
-    "@release-it/conventional-changelog": "^10.0.6",
     "@tsconfig/react-native": "^3.0.9",
     "@types/jest": "^29.5.14",
     "@types/bun": "1.4.0",
@@ -63,70 +60,7 @@
     "prettier": "^3.8.3",
     "react": "19.2.3",
     "react-native": "0.85.3",
-    "release-it": "^19.2.4",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.60.0"
-  },
-  "release-it": {
-    "npm": {
-      "publish": false
-    },
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}",
-      "requireCleanWorkingDir": false
-    },
-    "github": {
-      "release": true
-    },
-    "hooks": {
-      "before:release": "bun sync-core && bun run build",
-      "after:bump": "scripts/try-install-lockfiles.sh"
-    },
-    "plugins": {
-      "@release-it/bumper": {
-        "out": [
-          {
-            "file": "packages/react-native-nitro-test/package.json",
-            "path": "version"
-          },
-          {
-            "file": "packages/react-native-nitro-test-external/package.json",
-            "path": "version"
-          },
-          {
-            "file": "apps/example/package.json",
-            "path": "version"
-          }
-        ]
-      },
-      "@release-it/conventional-changelog": {
-        "preset": {
-          "name": "conventionalcommits",
-          "types": [
-            {
-              "type": "feat",
-              "section": "✨ Features"
-            },
-            {
-              "type": "perf",
-              "section": "💨 Performance Improvements"
-            },
-            {
-              "type": "fix",
-              "section": "🐛 Bug Fixes"
-            },
-            {
-              "type": "chore(deps)",
-              "section": "🛠️ Dependency Upgrades"
-            },
-            {
-              "type": "docs",
-              "section": "📚 Documentation"
-            }
-          ]
-        }
-      }
-    }
   }
 }

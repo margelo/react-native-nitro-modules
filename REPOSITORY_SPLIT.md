@@ -39,9 +39,11 @@ bun specs
 
 Commit the updated pin, metadata, lockfile, and any intended generated fixture changes here. Normal checkout updates use `git submodule update --init --recursive`, without `--remote`.
 
-For a version change, run `bun version:set <version>` in Nitro first. It updates the authoritative package versions, Nitrogen's `nitro-core` dependency, `packages/nitro-core/js/version.ts`, and `NITRO_VERSION` in `packages/nitro-core/cpp/utils/NitroDefines.hpp`. The wrapper's `bun update-core-version` adopts that version; it never writes a generated native header. See [CONTRIBUTING.md](CONTRIBUTING.md#shared-sources-and-releases) for the full sequence.
+Choose release versions in Nitro's GitHub Actions workflow. It updates `nitro-core`, Nitrogen, the JS version, and `NITRO_VERSION`, then publishes both npm packages and a GitHub release. This repository polls those completed releases, pins the exact tagged commit, adopts the same version, validates the RN package, and publishes it with its own GitHub release. Native sources continue to come from the committed gitlink.
 
-Publish `nitro-core` followed by `nitrogen` from Nitro, then `react-native-nitro-modules` from this repository. The wrapper's `bun release` checks for committed sources and matching versions, builds, and publishes only the RN package. Packing rebuilds the output and rejects uncommitted core sources. No npm packages or release tags were created during this split.
+`bun update-core-version` remains the local command for adopting the pinned core's version. `bun release [core-tag]` dispatches this repository's release workflow through `gh`. See [RELEASING.md](RELEASING.md) for setup, validation, and retry behavior. No npm packages or release tags were created while implementing this automation.
+
+Nightlies follow every commit pushed to Nitro's `main` and publish all three packages at the same nightly version. The wrapper publishes a tagged version commit without changing its `main` branch. Regular releases take priority when both channels have pending releases.
 
 ## Package contents
 

@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+    inputs:
+      core-tag:
+        description: "Published Nitro tag to adopt or retry (empty prioritizes regular releases, then the newest nightly)"
+        type: string
+        required: false
+
+concurrency:
+  group: release
+  queue: max
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    if: github.repository == 'margelo/react-native-nitro-modules' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - name: Find the next completed core release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CORE_TAG: ${{ inputs.core-tag }}
+        run: node scripts/find-core-release.mjs
+
+  release:
+    needs: discover
+    if: needs.discover.outputs.tag != ''
+    runs-on: macos-26
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          submodules: recursive
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - run: npm install --global npm@11.19.0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.5.app/Contents/Developer
+      - name: Adopt, verify and publish the core release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CORE_TAG: ${{ needs.discover.outputs.tag }}
+          BUNDLE_FROZEN: "true"
+        run: node scripts/release-ci.mjs
