@@ -1,8 +1,8 @@
 <a href="https://nitro.margelo.com">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./docs/static/img/banner-nitro-modules-dark.png" />
-    <source media="(prefers-color-scheme: light)" srcset="./docs/static/img/banner-nitro-modules-light.png" />
-    <img alt="Nitro Modules" src="./docs/static/img/banner-nitro-modules-light.png" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/margelo/nitro/core-split/docs/static/img/banner-nitro-modules-dark.png" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/margelo/nitro/core-split/docs/static/img/banner-nitro-modules-light.png" />
+    <img alt="Nitro Modules" src="https://raw.githubusercontent.com/margelo/nitro/core-split/docs/static/img/banner-nitro-modules-light.png" />
   </picture>
 </a>
 
@@ -87,9 +87,11 @@ We build fast and beautiful apps. Contact us at [margelo.com](https://margelo.co
 
 ## Contributing
 
-This repository owns the React Native package, apps, test modules, docs, and templates. Shared runtime sources and Nitrogen live in [margelo/nitro](https://github.com/margelo/nitro), pinned here by the `packages/react-native-nitro-modules/nitro/` submodule.
+This repository owns the React Native package, apps, test modules, and templates. Shared runtime sources, Nitrogen, and the docs live in [margelo/nitro](https://github.com/margelo/nitro). The `nitro-core` package contains both native sources and the shared JS/TS API; this wrapper uses an exact matching version.
 
-For a fresh checkout, run `bun bootstrap` to initialize `packages/react-native-nitro-modules/nitro/`, install dependencies, and build the workspace. Run `bun bootstrap:ios` to also install the example app's iOS dependencies. Shared implementation changes belong in `packages/react-native-nitro-modules/nitro/packages/nitro-core/`; `bun sync-core` copies its native sources into the React Native package before builds and packing. Shared JS/TS comes from the `nitro-core` dependency. RN bootstrap, views, and worklets integration remain in this repository.
+Run `bun bootstrap` to prepare dependencies and build the workspace, or `bun bootstrap:ios` to also install the example app's iOS dependencies. `bun sync-core` copies native sources from the installed `nitro-core` package into the existing RN package paths before builds and packing. Shared implementation changes belong in the Nitro repository. RN bootstrap, views, and worklets integration remain here.
+
+Until the first npm release of the new core package is available, bootstrap uses the pinned `packages/react-native-nitro-modules/nitro/` submodule as a temporary workspace source. The release adoption workflow removes that bootstrap dependency when it switches to published packages.
 
 Read [CONTRIBUTING.md](./CONTRIBUTING.md) for the contribution flow (PR expectations, the required test-per-fix rule, and the nitrogen workflow). For environment setup and reproduction walkthroughs, see the [contributing guide](https://nitro.margelo.com/docs/resources/contributing) on the docs site.
 

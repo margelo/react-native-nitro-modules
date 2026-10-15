@@ -6,7 +6,7 @@ import {
   github,
   parseVersion,
   readJSON,
-} from "../packages/react-native-nitro-modules/nitro/scripts/releases/lib.mjs";
+} from "./releases/lib.mjs";
 
 export const coreRepository = "margelo/nitro";
 export const repository = "margelo/react-native-nitro-modules";

@@ -4,50 +4,37 @@ The complete Nitro baseline is preserved in this repository's history at `d498e2
 
 ## Source ownership
 
-The `packages/react-native-nitro-modules/nitro` gitlink records the exact Nitro commit used by this repository. Its `branch = core-split` setting helps development; builds never follow that branch automatically.
+- Nitro owns `packages/nitro-core/`, `packages/nitrogen/`, and the documentation site in `docs/`. The core package uses one manifest and version for `native/{cpp,apple,android}` and `js/`. Native sources still contain React Native-specific code.
+- This repository owns the published `react-native-nitro-modules` package metadata, RN JS bootstrap, views and worklets integration, CocoaPods/Gradle/CMake integration, codegen configuration, apps, integration tests, fixtures, templates, and performance tooling. It depends on the exact matching `nitro-core` version and re-exports the shared API.
+- `bun sync-core` resolves the installed `nitro-core` package and stages `native/cpp/`, `native/apple/`, and `native/android/src/` into the wrapper's existing `cpp/`, `ios/`, and `android/src/` paths, along with the MIT license. It verifies matching versions and removes stale files only within its output directories. Generated copies are ignored by Git. Shared-source formatting happens in Nitro; this repository's formatters cover its own test fixtures.
 
-- Nitro owns `packages/nitro-core/{android,apple,cpp,js}` and `packages/nitrogen/`. The `nitro-core` npm package contains only shared JS/TS. Native sources still contain React Native-specific code.
-- This repository owns the published `react-native-nitro-modules` package metadata, RN JS bootstrap, views and worklets integration, CocoaPods/Gradle/CMake integration, codegen configuration, apps, integration tests, fixtures, templates, docs, and performance tooling. It depends on the exact matching `nitro-core` version and re-exports the shared API.
-- `bun sync-core` stages `packages/nitro-core/cpp/`, `packages/nitro-core/apple/`, and `packages/nitro-core/android/src/` into the existing `cpp/`, `ios/`, and `android/src/` paths, along with the MIT license. It checks the pinned commit and matching versions, removes stale files only within its three output directories, and ignores checkout caches. Generated copies are not tracked here. Native formatters edit the authoritative core sources. The wrapper maintains its own `src/` directory; shared JS/TS and Nitrogen run directly from the pinned submodule as workspace packages.
-
-Native implementation sources remain unchanged from the baseline apart from their repository paths. Shared JS/TS now lives in `nitro-core`, which Nitrogen uses instead of depending on the React Native runtime package. Existing RN package and native module names, namespaces, view generation, Fabric support, worklets, registration, and generated APIs remain unchanged.
+Existing RN package and native module names, namespaces, view generation, Fabric support, worklets, registration, and generated APIs remain unchanged. Nitrogen depends on `nitro-core` and is used through the installed package's CLI.
 
 `packages/template/` stays in this repository because it creates a React Native library, including its podspec, Gradle/CMake configuration, and React Native dependencies. Nitrogen remains in Nitro and downloads this template from the React Native repository.
 
 ## Bootstrap, update, and release
 
 ```sh
-# Clean checkout, including the pinned submodule, dependency install and build:
+# Prepare core dependencies, install packages, stage native sources and build:
 bun bootstrap
-# Optional macOS Ruby dependencies and example CocoaPods setup:
+# Also install macOS Ruby dependencies and example CocoaPods:
 bun bootstrap:ios
-# Stage local tracked core edits and regenerate existing fixtures:
+# Refresh staged native files and regenerate existing fixtures:
 bun sync-core
 bun specs
 ```
 
-Build shared sources and Nitrogen in the Nitro checkout with `bun bootstrap` and `bun typecheck`. Commit and push core changes before recording them here:
+The first npm release with the new `native/` and `js/` layout has not been published. This checkout therefore keeps the `packages/react-native-nitro-modules/nitro/` gitlink and its two workspace entries as a temporary source bootstrap. `bun bootstrap` initializes the exact recorded commit. Builds use those installed workspace packages; they do not follow the submodule's development branch automatically.
 
-```sh
-git -C packages/react-native-nitro-modules/nitro fetch origin
-git -C packages/react-native-nitro-modules/nitro checkout <pushed-core-sha>
-git add packages/react-native-nitro-modules/nitro
-bun update-core-version
-bun install
-bun specs
-```
+During this transition, build and typecheck changes in Nitro, then commit and push them before recording the new gitlink here. Run `bun update-core-version` when its version changes, then install, regenerate fixtures, and validate the native apps. Commit the updated gitlink, metadata, lockfile, and intended fixture changes together. See [CONTRIBUTING.md](CONTRIBUTING.md#shared-sources-and-releases) for the commands.
 
-Commit the updated pin, metadata, lockfile, and any intended generated fixture changes here. Normal checkout updates use `git submodule update --init --recursive`, without `--remote`.
+Each release snapshot removes the bootstrap submodule and workspace entries. The first successful regular release also commits that transition to `main`; nightlies leave `main` unchanged. Later updates install exact published `nitro-core` and `nitrogen` versions, update metadata and the lockfile, and stage native sources from that dependency. To test unreleased changes without a submodule, pack both packages in a Nitro checkout and install their local tarballs in a temporary wrapper checkout.
 
-Choose release versions in Nitro's GitHub Actions workflow. It updates `nitro-core`, Nitrogen, the JS version, and `NITRO_VERSION`, then publishes both npm packages and a GitHub release. This repository polls those completed releases, pins the exact tagged commit, adopts the same version, validates the RN package, and publishes it with its own GitHub release. Native sources continue to come from the committed gitlink.
-
-`bun update-core-version` remains the local command for adopting the pinned core's version. `bun release [core-tag]` dispatches this repository's release workflow through `gh`. See [RELEASING.md](RELEASING.md) for setup, validation, and retry behavior. No npm packages or release tags were created while implementing this automation.
-
-Nightlies follow every commit pushed to Nitro's `main` and publish all three packages at the same nightly version. The wrapper publishes a tagged version commit without changing its `main` branch. Regular releases take priority when both channels have pending releases.
+Nitro publishes matching `nitro-core` and `nitrogen` versions. Nightlies follow pushes to Nitro's `main`; official releases require a maintainer to request a version. The wrapper follows each channel at the same version after validating the installed packages and native builds. See [RELEASING.md](RELEASING.md) for triggering, npm setup, and recovery. No npm publication is needed to develop or validate this repository change.
 
 ## Package contents
 
-The RN tarball contains staged native sources at the existing build paths, RN JS integration, compiled JS, TypeScript declarations, native build files, codegen inputs, README, and license. It installs shared JS/TS through its `nitro-core` dependency. The `nitro-core` tarball contains shared JS/TS only; the Nitrogen tarball contains the CLI and generator. All three include their license and install without Git access, the core checkout, or external symlinks.
+The RN tarball contains staged native sources at the existing build paths, RN JS integration, compiled JS, TypeScript declarations, native build files, codegen inputs, README, and license. Its exact `nitro-core` dependency supplies the shared JS/TS API. The core tarball contains both native sources and JS/TS; Nitrogen's tarball contains the CLI and generator. All three include their license and install without Git access, a core checkout, staging scripts, or external symlinks. Tests, apps, Hermes, and build caches are excluded.
 
 ## Initial split validation
 

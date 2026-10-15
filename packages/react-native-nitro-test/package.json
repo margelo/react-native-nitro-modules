@@ -50,7 +50,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\" --fix",
     "lint-ci": "eslint \"**/*.{js,ts,tsx}\" -f @jamesacarr/github-actions --max-warnings 0",
-    "build-nitrogen-first": "node ../../scripts/sync-core.mjs && bun --cwd ../react-native-nitro-modules/nitro/packages/nitro-core build && bun --cwd ../react-native-nitro-modules tsc && bun --cwd ../react-native-nitro-modules/nitro/packages/nitrogen tsc",
+    "build-nitrogen-first": "bun --cwd ../.. build-core && node ../../scripts/sync-core.mjs && bun --cwd ../react-native-nitro-modules tsc",
     "generate-external-first": "cd ../react-native-nitro-test-external && bun run build && bun run specs",
     "specs": "bun build-nitrogen-first && bun generate-external-first && nitrogen --logLevel=\"debug\"",
     "clean": "rm -rf android/build node_modules/**/android/build lib"
@@ -59,7 +59,7 @@
     "@types/jest": "*",
     "@types/react": "^19.2.15",
     "jest": "*",
-    "nitrogen": "*",
+    "nitrogen": "0.37.1",
     "@react-native/jest-preset": "0.85.3",
     "react": "19.2.3",
     "react-native": "0.85.3",

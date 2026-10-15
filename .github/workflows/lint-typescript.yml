@@ -11,6 +11,10 @@ on:
       - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - 'scripts/update-core-version.mjs'
       - 'bun.lock'
       - '.github/workflows/lint-typescript.yml'
@@ -27,6 +31,10 @@ on:
       - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - 'scripts/update-core-version.mjs'
       - 'bun.lock'
       - '.github/workflows/lint-typescript.yml'
@@ -70,12 +78,6 @@ jobs:
       - name: Run ESLint CI in apps/example/
         working-directory: apps/example
         run: bun lint-ci
-      - name: Run ESLint CI in nitro-core
-        working-directory: packages/react-native-nitro-modules/nitro/packages/nitro-core
-        run: bun lint-ci
-      - name: Run ESLint CI in packages/react-native-nitro-modules/nitro/packages/nitrogen
-        working-directory: packages/react-native-nitro-modules/nitro/packages/nitrogen
-        run: bun lint-ci
       - name: Run ESLint CI in packages/react-native-nitro-test-external
         working-directory: packages/react-native-nitro-test-external
         run: bun lint-ci
@@ -88,12 +90,6 @@ jobs:
 
       - name: Run ESLint with auto-fix in apps/example/
         working-directory: apps/example
-        run: bun lint
-      - name: Run ESLint with auto-fix in nitro-core
-        working-directory: packages/react-native-nitro-modules/nitro/packages/nitro-core
-        run: bun lint
-      - name: Run ESLint with auto-fix in packages/react-native-nitro-modules/nitro/packages/nitrogen
-        working-directory: packages/react-native-nitro-modules/nitro/packages/nitrogen
         run: bun lint
       - name: Run ESLint with auto-fix in packages/react-native-nitro-test-external
         working-directory: packages/react-native-nitro-test-external
@@ -108,4 +104,3 @@ jobs:
       - name: Verify no files have changed after auto-fix
         run: |
           git diff --exit-code HEAD -- . ':(exclude)bun.lock'
-          git -C packages/react-native-nitro-modules/nitro diff --exit-code HEAD

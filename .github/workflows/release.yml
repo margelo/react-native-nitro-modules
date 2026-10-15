@@ -2,7 +2,8 @@ name: Release
 
 on:
   schedule:
-    - cron: "7,22,37,52 * * * *"
+    # Recovery if the immediate dispatch from Nitro was missed or failed.
+    - cron: "17 * * * *"
   workflow_dispatch:
     inputs:
       core-tag:
@@ -27,7 +28,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          submodules: recursive
           persist-credentials: false
       - uses: actions/setup-node@v6
         with:
@@ -52,7 +52,6 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-          submodules: recursive
       - uses: actions/setup-node@v6
         with:
           node-version: "24"

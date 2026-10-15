@@ -13,15 +13,14 @@
     "packages/react-native-nitro-modules/nitro/packages/nitrogen",
     "packages/react-native-nitro-test",
     "packages/react-native-nitro-test-external",
-    "apps/*",
-    "docs"
+    "apps/*"
   ],
   "scripts": {
     "postinstall": "bun run build && bun install --ignore-scripts --frozen-lockfile",
-    "build": "bun sync-core && bun nitro build && bun nitrogen build && bun nitro-test-external build && bun nitro-test build",
-    "bootstrap": "git submodule update --init --recursive && bun install",
+    "build": "bun nitro build && bun nitro-test-external build && bun nitro-test build",
+    "bootstrap": "node scripts/bootstrap-core.mjs && bun install --frozen-lockfile",
     "typecheck": "bun --filter=\"**\" typecheck",
-    "lint": "bun nitro-core lint && bun nitro lint && bun nitrogen lint && bun nitro-test lint && bun example lint",
+    "lint": "bun nitro lint && bun nitro-test lint && bun example lint",
     "lint-cpp": "./scripts/clang-format.sh",
     "lint-swift": "./scripts/swift-format.sh",
     "lint-kotlin": "./scripts/kotlin-format.sh",
@@ -30,10 +29,9 @@
     "typecheck:performance-tools": "tsc -p scripts/performance/tsconfig.json",
     "clean": "git clean -dfx",
     "release": "./scripts/release.sh",
-    "docs": "bun --cwd docs",
     "specs": "bun nitro-test specs",
     "nitro": "bun --cwd packages/react-native-nitro-modules",
-    "nitrogen": "bun --cwd packages/react-native-nitro-modules/nitro/packages/nitrogen",
+    "nitrogen": "node scripts/nitrogen.mjs",
     "nitro-test": "bun --cwd packages/react-native-nitro-test",
     "nitro-test-external": "bun --cwd packages/react-native-nitro-test-external",
     "example": "bun --cwd apps/example",
@@ -41,7 +39,8 @@
     "sync-core": "node scripts/sync-core.mjs",
     "bootstrap:ios": "bun bootstrap && bun example bundle-install && bun example pods",
     "update-core-version": "node scripts/update-core-version.mjs",
-    "nitro-core": "bun --cwd packages/react-native-nitro-modules/nitro/packages/nitro-core"
+    "build-core": "node scripts/build-core.mjs",
+    "test:staging": "node --test scripts/sync-core.test.mjs"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
@@ -61,6 +60,7 @@
     "react": "19.2.3",
     "react-native": "0.85.3",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.60.0"
+    "typescript-eslint": "^8.60.0",
+    "nitrogen": "0.37.1"
   }
 }

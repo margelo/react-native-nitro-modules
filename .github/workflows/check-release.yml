@@ -7,14 +7,20 @@ on:
       [
         "scripts/*release*",
         ".github/workflows/*release*",
-        "packages/react-native-nitro-modules/nitro",
+        "scripts/releases/**",
+        "scripts/update-core-version.mjs",
+        "scripts/core-package.mjs",
+        "scripts/sync-core*.mjs",
       ]
   pull_request:
     paths:
       [
         "scripts/*release*",
         ".github/workflows/*release*",
-        "packages/react-native-nitro-modules/nitro",
+        "scripts/releases/**",
+        "scripts/update-core-version.mjs",
+        "scripts/core-package.mjs",
+        "scripts/sync-core*.mjs",
       ]
 
 permissions:
@@ -25,12 +31,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          submodules: recursive
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
-      - run: node --test scripts/find-core-release.test.mjs
+      - run: node --test scripts/find-core-release.test.mjs scripts/releases/*.test.mjs scripts/sync-core.test.mjs
       - run: node --check scripts/release-ci.mjs && bash -n scripts/release.sh
       - uses: docker://rhysd/actionlint:1.7.12
         with:

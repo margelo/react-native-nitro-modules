@@ -5,9 +5,14 @@ on:
     branches:
       - main
     paths:
+      - 'bun.lock'
       - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - '.github/workflows/run-nitrogen.yml'
       - '**/*.ts'
       - '**/*.tsx'
@@ -19,9 +24,14 @@ on:
       - '**/package.json'
   pull_request:
     paths:
+      - 'bun.lock'
       - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - '.github/workflows/run-nitrogen.yml'
       - '**/*.ts'
       - '**/*.tsx'

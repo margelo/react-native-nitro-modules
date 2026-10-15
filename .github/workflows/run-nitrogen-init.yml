@@ -5,18 +5,28 @@ on:
     branches:
       - main
     paths:
+      - 'bun.lock'
       - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - '.github/workflows/run-nitrogen-init.yml'
       - '**/*.lockb'
       - '**/package.json'
       - 'packages/template/**'
   pull_request:
     paths:
+      - 'bun.lock'
       - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - '.github/workflows/run-nitrogen-init.yml'
       - '**/*.lockb'
       - '**/package.json'
@@ -40,4 +50,4 @@ jobs:
 
       - name: Run nitrogen init outside the repository
         working-directory: ${{ runner.temp }}
-        run: node "$GITHUB_WORKSPACE/packages/react-native-nitro-modules/nitro/packages/nitrogen/lib/index.js" init react-native-math
+        run: node "$GITHUB_WORKSPACE/scripts/nitrogen.mjs" init react-native-math

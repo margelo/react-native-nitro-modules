@@ -5,17 +5,15 @@ on:
     branches:
       - main
     paths:
-      - 'packages/react-native-nitro-modules/nitro'
-      - '.gitmodules'
-      - 'scripts/sync-core.mjs'
       - '.github/workflows/lint-swift.yml'
+      - 'scripts/swift-format.sh'
+      - 'config/**'
       - '**/*.swift'
   pull_request:
     paths:
-      - 'packages/react-native-nitro-modules/nitro'
-      - '.gitmodules'
-      - 'scripts/sync-core.mjs'
       - '.github/workflows/lint-swift.yml'
+      - 'scripts/swift-format.sh'
+      - 'config/**'
       - '**/*.swift'
 
 jobs:
@@ -24,12 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          submodules: recursive
       - uses: oven-sh/setup-bun@v2
-
-      - name: Stage shared sources
-        run: bun sync-core
 
       - name: Run swift format
         run: bun run lint-swift
@@ -37,5 +30,4 @@ jobs:
       - name: Verify no files have changed after format
         run: |
           git diff --exit-code HEAD -- . ':(exclude)bun.lock'
-          git -C packages/react-native-nitro-modules/nitro diff --exit-code HEAD
 

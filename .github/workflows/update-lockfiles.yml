@@ -5,15 +5,26 @@ on:
     branches:
       - main
     paths:
+      - '**/package.json'
+      - 'bun.lock'
       - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - ".github/workflows/update-lockfiles.yml"
   pull_request:
     paths:
+      - 'bun.lock'
       - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - ".github/workflows/update-lockfiles.yml"
       - "package.json"
       - "**/package.json"
@@ -52,10 +63,6 @@ jobs:
           bundle install
           bun pods
           cd "$GITHUB_WORKSPACE"
-
-          cd docs
-          bun install
-          cd ..
 
           git add bun.lock
           git add apps/example/ios/Podfile.lock

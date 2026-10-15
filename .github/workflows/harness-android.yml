@@ -24,9 +24,14 @@ on:
     branches:
       - main
     paths:
+      - '**/package.json'
       - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - ".github/workflows/harness-android.yml"
       - "apps/example/android/**"
       - "**/nitrogen/generated/shared/**"
@@ -47,9 +52,14 @@ on:
       - "apps/example/rn-harness.config.mjs"
   pull_request:
     paths:
+      - '**/package.json'
       - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - ".github/workflows/harness-android.yml"
       - "apps/example/android/**"
       - "**/nitrogen/generated/shared/**"

@@ -1,63 +1,47 @@
-import { readFileSync, writeFileSync } from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { writeFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { readCoreVersion, readJson } from "./core-package.mjs";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const read = (file) => JSON.parse(readFileSync(path.join(root, file), 'utf8'))
-const version = read(
-  'packages/react-native-nitro-modules/nitro/packages/nitro-core/package.json'
-).version
-const nitrogen = read(
-  'packages/react-native-nitro-modules/nitro/packages/nitrogen/package.json'
-)
-const nitrogenVersion = nitrogen.version
-if (nitrogen.dependencies['nitro-core'] !== `^${version}`) {
-  throw new Error('Nitrogen must depend on the matching nitro-core version.')
-}
-const jsVersion = readFileSync(
-  path.join(
-    root,
-    'packages/react-native-nitro-modules/nitro/packages/nitro-core/js/version.ts'
-  ),
-  'utf8'
-).match(/^export const version = '([^']+)'$/m)?.[1]
-const nativeVersion = readFileSync(
-  path.join(
-    root,
-    'packages/react-native-nitro-modules/nitro/packages/nitro-core/cpp/utils/NitroDefines.hpp'
-  ),
-  'utf8'
-).match(/#define NITRO_VERSION "([^"]+)"/)?.[1]
-if (
-  [nitrogenVersion, jsVersion, nativeVersion].some((value) => value !== version)
-) {
+const root = fileURLToPath(new URL("../", import.meta.url));
+const check = process.argv.includes("--check");
+const requested = process.argv.slice(2).find((arg) => !arg.startsWith("--"));
+if (check && requested)
   throw new Error(
-    'Update the authoritative package versions, embedded JS version and NITRO_VERSION in nitro first, then commit and pin that core revision.'
-  )
-}
+    "--check verifies the installed core packages; omit the version argument.",
+  );
+const version = requested ?? readCoreVersion(root).version;
+if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version))
+  throw new Error(`Invalid core version: ${version}`);
+
 for (const file of [
-  'package.json',
-  'packages/react-native-nitro-modules/package.json',
-  'packages/react-native-nitro-test/package.json',
-  'packages/react-native-nitro-test-external/package.json',
-  'apps/example/package.json',
+  "package.json",
+  "packages/react-native-nitro-modules/package.json",
+  "packages/react-native-nitro-test/package.json",
+  "packages/react-native-nitro-test-external/package.json",
+  "apps/example/package.json",
+  "apps/benchmark/package.json",
 ]) {
-  const pkg = read(file)
-  const usesCore =
-    file === 'packages/react-native-nitro-modules/package.json' ||
-    file === 'apps/example/package.json'
-  if (process.argv.includes('--check')) {
+  const filename = path.join(root, file);
+  const pkg = readJson(filename);
+  const usesCore = pkg.dependencies?.["nitro-core"] !== undefined;
+  const usesNitrogen =
+    file === "package.json" || pkg.devDependencies?.nitrogen !== undefined;
+  if (check) {
     if (
       pkg.version !== version ||
-      (usesCore && pkg.dependencies?.['nitro-core'] !== version)
-    )
+      (usesCore && pkg.dependencies["nitro-core"] !== version) ||
+      (usesNitrogen && pkg.devDependencies?.nitrogen !== version)
+    ) {
       throw new Error(
-        `${file} must use core version ${version}. Run bun update-core-version.`
-      )
+        `${file} must use core version ${version}. Run bun update-core-version.`,
+      );
+    }
   } else {
-    pkg.version = version
-    if (usesCore)
-      pkg.dependencies = { ...pkg.dependencies, 'nitro-core': version }
-    writeFileSync(path.join(root, file), `${JSON.stringify(pkg, null, 2)}\n`)
+    pkg.version = version;
+    if (usesCore) pkg.dependencies["nitro-core"] = version;
+    if (usesNitrogen)
+      pkg.devDependencies = { ...pkg.devDependencies, nitrogen: version };
+    writeFileSync(filename, `${JSON.stringify(pkg, null, 2)}\n`);
   }
 }

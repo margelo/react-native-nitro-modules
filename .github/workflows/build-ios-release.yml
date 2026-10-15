@@ -5,10 +5,16 @@ on:
     types: [published]
   pull_request:
     paths:
+      - '**/package.json'
+      - 'bun.lock'
       - 'packages/react-native-nitro-modules/nitro'
       - 'packages/react-native-nitro-modules/apple/**'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
+      - 'scripts/core-package.mjs'
+      - 'scripts/build-core.mjs'
+      - 'scripts/bootstrap-core.mjs'
+      - 'scripts/nitrogen.mjs'
       - '.github/workflows/build-ios-release.yml'
 
 jobs:

@@ -27,7 +27,7 @@ import {
   saveDraft,
   validateManifest,
   writeJSON,
-} from "../packages/react-native-nitro-modules/nitro/scripts/releases/lib.mjs";
+} from "./releases/lib.mjs";
 import {
   coreManifestName,
   coreRepository,
@@ -37,8 +37,17 @@ import {
   repository,
 } from "./find-core-release.mjs";
 
+import {
+  legacySubmodule,
+  readLock,
+  removeLegacyBootstrap,
+  verifyCoreTag,
+  verifyInstalledSources,
+  verifySourceLock,
+  verifySourceMetadata,
+} from "./releases/source-packages.mjs";
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const submodule = "packages/react-native-nitro-modules/nitro";
 const packageDirectory = "packages/react-native-nitro-modules";
 
 export async function verifyConsumer(
@@ -88,6 +97,7 @@ export async function verifyConsumer(
     });
     // Ordinary installation exercises the published package's consumer lifecycle.
     run("npm", ["install", "--no-audit", "--no-fund"], { cwd: consumer });
+    verifyInstalledSources(consumer, coreManifest);
     for (const name of [
       "nitro-core",
       "nitrogen",
@@ -194,21 +204,30 @@ export async function verifyConsumer(
 }
 
 function verifyCheckout(coreManifest) {
-  const gitlink = git(["ls-tree", "HEAD", submodule]).split(/\s+/)[2];
   assert.equal(
-    gitlink,
-    coreManifest.commit,
-    "Release gitlink does not match the core release",
+    git(["ls-files", "--stage", "--", legacySubmodule]),
+    "",
+    "Release must remove the legacy source submodule",
   );
-  assert.equal(
-    readJSON(path.join(packageDirectory, "package.json")).version,
-    coreManifest.version,
-  );
-  run("node", ["scripts/update-core-version.mjs", "--check"]);
+  verifySourceMetadata(root, coreManifest);
+  verifySourceLock(readLock(root), coreManifest);
 }
 
-function buildAndCheck() {
-  run("bun", ["install", "--ignore-scripts"]);
+function buildAndCheck(coreManifest, frozen) {
+  run("node", [
+    "--test",
+    "scripts/find-core-release.test.mjs",
+    "scripts/releases/lib.test.mjs",
+    "scripts/releases/source-packages.test.mjs",
+  ]);
+  run("bun", [
+    "install",
+    "--ignore-scripts",
+    ...(frozen ? ["--frozen-lockfile"] : []),
+  ]);
+  verifyCheckout(coreManifest);
+  verifyInstalledSources(root, coreManifest);
+  run("node", ["scripts/update-core-version.mjs", "--check"]);
   run("bun", ["run", "build"]);
   run("bun", ["typecheck"]);
   run("bun", ["specs"]);
@@ -290,16 +309,7 @@ export async function release() {
       "Nightly versions must use the nightly npm tag",
     );
     await assertPublishedPackages(coreManifest);
-    git(["fetch", "origin", `refs/tags/${tag}:refs/tags/${tag}`], {
-      cwd: path.join(root, submodule),
-    });
-    assert.equal(
-      git(["rev-parse", `${tag}^{commit}`], {
-        cwd: path.join(root, submodule),
-      }),
-      coreManifest.commit,
-      "Core tag does not match its release manifest",
-    );
+    await verifyCoreTag(coreManifest);
 
     const ownRelease = await getRelease(repository, tag);
     const remoteTag = git([
@@ -334,7 +344,6 @@ export async function release() {
         "origin/main",
       ]);
       git(["checkout", "--detach", tag]);
-      git(["submodule", "update", "--init", "--recursive"]);
       verifyCheckout(coreManifest);
     } else {
       assert(!ownRelease, "A release exists without its Git tag");
@@ -347,11 +356,9 @@ export async function release() {
           compareVersions(coreManifest.version, current) > 0,
           "A new release must increase the wrapper version",
         );
-      git(["checkout", "--detach", coreManifest.commit], {
-        cwd: path.join(root, submodule),
-      });
-      git(["add", submodule]); // sync-core checks the index, not just the working tree.
-      run("node", ["scripts/update-core-version.mjs"]);
+      removeLegacyBootstrap(root);
+      run("node", ["scripts/update-core-version.mjs", coreManifest.version]);
+      verifySourceMetadata(root, coreManifest);
     }
 
     let manifest;
@@ -375,24 +382,32 @@ export async function release() {
         !ownRelease || ownRelease.draft,
         "Completed release is missing its checkpoint",
       );
-      buildAndCheck();
+      buildAndCheck(coreManifest, Boolean(remoteTag));
       if (remoteTag) {
         assertClean(root);
       } else {
         const allowed = [
           "package.json",
           "bun.lock",
-          submodule,
+          ".gitmodules",
+          legacySubmodule,
           `${packageDirectory}/package.json`,
           "packages/react-native-nitro-test/package.json",
           "packages/react-native-nitro-test-external/package.json",
           "apps/example/package.json",
+          "apps/benchmark/package.json",
           "apps/example/ios/Podfile.lock",
           "apps/benchmark/ios/Podfile.lock",
           "packages/react-native-nitro-test/nitrogen/generated",
           "packages/react-native-nitro-test-external/nitrogen/generated",
         ];
-        git(["add", "--", ...allowed]);
+        // git rm has already staged bootstrap removals. Only add paths that
+        // still exist or are tracked, so later releases work after that removal.
+        const changed = allowed.filter(
+          (file) =>
+            existsSync(path.join(root, file)) || git(["ls-files", "--", file]),
+        );
+        git(["add", "--", ...changed]);
         git(["diff", "--exit-code"]);
         assert.equal(
           git(["ls-files", "--others", "--exclude-standard"]),

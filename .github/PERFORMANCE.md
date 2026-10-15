@@ -206,7 +206,7 @@ for local build and run commands.
 
 ## Nitro Modules Bot
 
-The paired PR comparison can post as a dedicated GitHub App named **Nitro Modules Bot**, using [`docs/static/img/nos.png`](../docs/static/img/nos.png)
+The paired PR comparison can post as a dedicated GitHub App named **Nitro Modules Bot**, using [Nitro logo](https://github.com/margelo/nitro/blob/core-split/docs/static/img/nos.png)
 as its avatar. The app needs no hosted service or webhook receiver; Actions
 creates short-lived installation tokens for the request acknowledgment and report
 publication in separate jobs that never execute PR code.
