@@ -87,7 +87,7 @@ private:
 };
 ```
 
-The `MyHybridObject` can then be registered in the [`HybridObjectRegistry`](./cpp/registry/HybridObjectRegistry.hpp) at app startup:
+The `MyHybridObject` can then be registered in the [`HybridObjectRegistry`](https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/cpp/registry/HybridObjectRegistry.hpp) at app startup:
 
 ```cpp
 #include <NitroModules/HybridObjectRegistry.hpp>
@@ -103,7 +103,7 @@ void load() {
 }
 ```
 
-Inside your `MyHybridObject`, you can use standard C++ types which will automatically be converted to JS using Nitro's [`JSIConverter<T>`](./cpp/jsi/JSIConverter.hpp) interface.
+Inside your `MyHybridObject`, you can use standard C++ types which will automatically be converted to JS using Nitro's [`JSIConverter<T>`](https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/cpp/jsi/JSIConverter.hpp) interface.
 
 The following C++ / JS types are supported out of the box:
 
@@ -189,9 +189,9 @@ The following C++ / JS types are supported out of the box:
   </tr>
   <tr>
     <td><code>(T...) =&gt; R</code></td>
-    <td><code>std::function&lt;std::shared_ptr&lt;<a href="./cpp/core/Promise.hpp">Promise&lt;R&gt;</a>&gt; (T...)&gt;</code></td>
-    <td><code>(T...) -&gt; <a href="./ios/core/Promise.swift">Promise&lt;T&gt;</a></code></td>
-    <td><code>(T...) -&gt; <a href="./android/src/main/java/com/margelo/nitro/core/Promise.kt">Promise&lt;T&gt;</a></code></td>
+    <td><code>std::function&lt;std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/cpp/core/Promise.hpp">Promise&lt;R&gt;</a>&gt; (T...)&gt;</code></td>
+    <td><code>(T...) -&gt; <a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/ios/core/Promise.swift">Promise&lt;T&gt;</a></code></td>
+    <td><code>(T...) -&gt; <a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/Promise.kt">Promise&lt;T&gt;</a></code></td>
   </tr>
   <tr>
     <td><code>Sync&lt;(T...) =&gt; R&gt;</code></td>
@@ -207,21 +207,21 @@ The following C++ / JS types are supported out of the box:
   </tr>
   <tr>
     <td><code>Promise&lt;T&gt;</code></td>
-    <td><code>std::shared_ptr&lt;<a href="./cpp/core/Promise.hpp">Promise&lt;T&gt;</a>&gt;</code></td>
-    <td><code><a href="./ios/core/Promise.swift">Promise&lt;T&gt;</a></code></td>
-    <td><code><a href="./android/src/main/java/com/margelo/nitro/core/Promise.kt">Promise&lt;T&gt;</a></code></td>
+    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/cpp/core/Promise.hpp">Promise&lt;T&gt;</a>&gt;</code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/ios/core/Promise.swift">Promise&lt;T&gt;</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/Promise.kt">Promise&lt;T&gt;</a></code></td>
   </tr>
   <tr>
-    <td><code><a href="./src/AnyMap.ts">AnyMap</a></code></td>
-    <td><code>std::shared_ptr&lt;<a href="./cpp/core/AnyMap.hpp">AnyMap</a>&gt;</code></td>
-    <td><code><a href="./ios/core/AnyMap.swift">AnyMap</a></code></td>
-    <td><code><a href="./android/src/main/java/com/margelo/nitro/core/AnyMap.kt">AnyMap</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/src/AnyMap.ts">AnyMap</a></code></td>
+    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/cpp/core/AnyMap.hpp">AnyMap</a>&gt;</code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/ios/core/AnyMap.swift">AnyMap</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/AnyMap.kt">AnyMap</a></code></td>
   </tr>
   <tr>
     <td><code>ArrayBuffer</code></td>
-    <td><code>std::shared_ptr&lt;<a href="./cpp/core/ArrayBuffer.hpp">ArrayBuffer</a>&gt;</code></td>
-    <td><code><a href="./ios/core/ArrayBuffer.swift">ArrayBuffer</a></code></td>
-    <td><code><a href="./android/src/main/java/com/margelo/nitro/core/ArrayBuffer.kt">ArrayBuffer</a></code></td>
+    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/cpp/core/ArrayBuffer.hpp">ArrayBuffer</a>&gt;</code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/ios/core/ArrayBuffer.swift">ArrayBuffer</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/ArrayBuffer.kt">ArrayBuffer</a></code></td>
   </tr>
   <tr>
     <td><code>Date</code></td>
@@ -230,10 +230,10 @@ The following C++ / JS types are supported out of the box:
     <td><code>java.time.Instant</code></td>
   </tr>
   <tr>
-    <td>..any <code><a href="./src/HybridObject.ts">HybridObject</a></code></td>
-    <td><code>std::shared_ptr&lt;<a href="./cpp/core/HybridObject.hpp">HybridObject</a>&gt;</code></td>
-    <td><code><a href="./ios/core/HybridObject.swift">HybridObject</a></code></td>
-    <td><code><a href="./android/src/main/java/com/margelo/nitro/core/HybridObject.kt">HybridObject</a></code></td>
+    <td>..any <code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/src/HybridObject.ts">HybridObject</a></code></td>
+    <td><code>std::shared_ptr&lt;<a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/cpp/core/HybridObject.hpp">HybridObject</a>&gt;</code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/ios/core/HybridObject.swift">HybridObject</a></code></td>
+    <td><code><a href="https://github.com/margelo/nitro/blob/core-split/packages/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/HybridObject.kt">HybridObject</a></code></td>
   </tr>
   <tr>
     <td>..any <code>interface</code></td>

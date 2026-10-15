@@ -12,7 +12,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const core = path.join(root, 'core')
+const submodulePath = 'packages/react-native-nitro-modules/nitro'
+const core = path.join(root, submodulePath)
 const packagePath = 'packages/react-native-nitro-modules'
 // Only these directories and the license are owned by this command.
 const directories = ['cpp', 'ios', 'android/src', 'src']
@@ -25,10 +26,10 @@ if (!existsSync(path.join(core, packagePath, 'package.json'))) {
     'Initialize the pinned core checkout first: git submodule update --init --recursive'
   )
 }
-const pinned = git(root, 'ls-files', '--stage', 'core').split(/\s+/)[1]
+const pinned = git(root, 'ls-files', '--stage', submodulePath).split(/\s+/)[1]
 if (git(core, 'rev-parse', 'HEAD') !== pinned) {
   throw new Error(
-    'core differs from the pinned commit. Restore it with git submodule update, or stage an intentional update with git add core.'
+    'core differs from the pinned commit. Restore it with git submodule update, or stage an intentional update with git add packages/react-native-nitro-modules/nitro.'
   )
 }
 if (process.argv.includes('--check-clean')) {

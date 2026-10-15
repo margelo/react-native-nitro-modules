@@ -58,6 +58,7 @@ export default [
   {
     ignores: [
       '**/node_modules/**',
+      'packages/react-native-nitro-modules/nitro/**',
       '**/.harness/**',
       '**/lib/**',
       '**/.eslintrc.*',

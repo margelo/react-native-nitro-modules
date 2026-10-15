@@ -5,7 +5,7 @@ on:
     types: [published]
   pull_request:
     paths:
-      - 'core'
+      - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
       - '.github/workflows/build-android-release.yml'

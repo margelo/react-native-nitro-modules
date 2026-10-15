@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 
 # The release version comes from the pinned core commit.
 git diff --exit-code HEAD
-git -C core diff --exit-code HEAD
+git -C packages/react-native-nitro-modules/nitro diff --exit-code HEAD
 node scripts/update-core-version.mjs --check
 bun install --frozen-lockfile
 bun run build

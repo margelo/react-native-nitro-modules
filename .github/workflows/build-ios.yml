@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'core'
+      - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
       - '.github/workflows/build-ios.yml'
@@ -24,7 +24,7 @@ on:
       - '**/nitro.json'
   pull_request:
     paths:
-      - 'core'
+      - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
       - '.github/workflows/build-ios.yml'

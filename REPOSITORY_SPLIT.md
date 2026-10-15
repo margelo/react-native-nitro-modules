@@ -1,16 +1,18 @@
 # Repository split
 
-The complete Nitro baseline is preserved on this repository's `main` branch at `d498e237e9b4117c4abe38c023adf486c75f856a`. Its tracked-tree hash is `d5e639fb4d492f433ff70b25ec59ccf4a130a3fc`, identical to upstream Nitro. The baseline and its Git history were pushed here before the core repository was restructured. Both repositories implement the split on `core-split`; no changes were imported from `react-nitro`.
+The complete Nitro baseline is preserved in this repository's history at `d498e237e9b4117c4abe38c023adf486c75f856a`. Its tracked-tree hash is `d5e639fb4d492f433ff70b25ec59ccf4a130a3fc`, identical to upstream Nitro. The baseline and its Git history were pushed here before the core repository was restructured. The React Native split is on this repository's `main` branch. Nitro keeps the shared-source split on `core-split`, with its `main` branch unchanged. No changes were imported from `react-nitro`.
 
 ## Source ownership
 
-The `core` submodule pins Nitro commit `30c1e7abc7912d291086f6cbc829cd55c76bbfdb`. Its `branch = core-split` setting helps development; builds never follow that branch automatically.
+The `packages/react-native-nitro-modules/nitro` submodule pins Nitro commit `0be4d68e34585e66b44369326b783160e3b47671`. Its `branch = core-split` setting helps development; builds never follow that branch automatically.
 
 - Nitro owns the native runtime and JS/TS implementation in `packages/react-native-nitro-modules/{cpp,ios,android/src,src}`, plus `packages/nitrogen`.
 - This repository owns the published `react-native-nitro-modules` package metadata, CocoaPods/Gradle/CMake integration, codegen configuration, apps, integration tests, fixtures, templates, docs, and performance tooling.
 - `bun sync-core` copies tracked implementation files and the MIT license into the existing runtime package paths. It checks the pinned commit and matching versions, removes stale files only within its four output directories, and ignores checkout caches. Generated copies are not tracked here. Native formatters and the runtime lint command edit the authoritative core sources.
 
 The runtime implementation is byte-for-byte unchanged from the baseline. Nitrogen's only source change is the template repository URL. Public package names, module names, namespaces, view generation, Fabric support, worklets, registration, and generated APIs remain unchanged.
+
+`packages/template/` stays in this repository because it creates a React Native library, including its podspec, Gradle/CMake configuration, and React Native dependencies. Nitrogen remains in Nitro and downloads this template from the React Native repository.
 
 ## Bootstrap, update, and release
 
@@ -27,9 +29,9 @@ bun specs
 Build shared sources and Nitrogen in the Nitro checkout with `bun bootstrap` and `bun typecheck`. Commit and push core changes before recording them here:
 
 ```sh
-git -C core fetch origin
-git -C core checkout <pushed-core-sha>
-git add core
+git -C packages/react-native-nitro-modules/nitro fetch origin
+git -C packages/react-native-nitro-modules/nitro checkout <pushed-core-sha>
+git add packages/react-native-nitro-modules/nitro
 bun update-core-version
 bun install
 bun specs
@@ -48,6 +50,8 @@ Both packages were packed with `npm pack`, inspected, and installed with ordinar
 The runtime tarball contains 290 files: actual C++/Swift/Kotlin/JNI/JS sources, CommonJS/ES module output, TypeScript declarations, native build files, the podspec, codegen inputs, README, and license. The Nitrogen tarball contains 297 files: the executable CLI, compiled generator, TypeScript sources, README, and license. Neither includes Git metadata, the core checkout, apps, docs, test fixtures, build caches, `node_modules`, Hermes sources, or external symlinks. npm installation performs no Git fetch or core staging.
 
 ## Validation results
+
+After moving the submodule into the runtime package, a fresh clone passed `bun bootstrap` and `bun specs` without tracked changes. Workspace typechecks, lint, docs build, Metro exclusions, and React Native autolinking checks passed. The repacked runtime retained all native and generated JS files unchanged. Installing it in a separate npm consumer passed typechecking and produced identical Nitrogen output.
 
 - Core build, typecheck, lint, frozen dependency installation, fresh bootstrap, and remote template initialization passed. All six core GitHub Actions workflows passed on the initial split commit; the repository rename only updates links and the template URL. Release version synchronization was exercised in a temporary copy with publication and Git release actions disabled.
 - Wrapper build, all workspace typechecks, lint, docs typecheck/build, and generation passed. A fresh clone completed `bun bootstrap` and `bun specs` with no tracked changes and a working Nitrogen CLI. All 282 generated fixture files matched the baseline, including view bindings and autolinking.

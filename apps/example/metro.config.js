@@ -4,7 +4,9 @@ const pak = require('../../package.json')
 
 const root = path.resolve(__dirname, '../..')
 const modules = Object.keys({ ...pak.peerDependencies })
-const corePath = path.join(root, 'core').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const corePath = path
+  .join(root, 'packages/react-native-nitro-modules/nitro')
+  .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 /**
  * Metro configuration

@@ -2,7 +2,9 @@ const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config')
 const path = require('node:path')
 
 const root = path.resolve(__dirname, '../..')
-const corePath = path.join(root, 'core').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const corePath = path
+  .join(root, 'packages/react-native-nitro-modules/nitro')
+  .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 /**
  * Metro configuration

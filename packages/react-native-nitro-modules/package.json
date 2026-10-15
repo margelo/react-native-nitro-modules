@@ -25,7 +25,8 @@
     "README.md",
     "NitroModules.podspec",
     "LICENSE",
-    "!lib/typescript/__tests__"
+    "!lib/typescript/__tests__",
+    "!/nitro"
   ],
   "keywords": [
     "react-native",
@@ -67,7 +68,7 @@
     "postversion": "bun run write-native-version",
     "build": "bun sync-core && rm -rf lib && bun typecheck && bob build",
     "typecheck": "tsc --noEmit",
-    "lint": "bun --cwd ../../core/packages/react-native-nitro-modules lint && bun sync-core",
+    "lint": "bun --cwd nitro/packages/react-native-nitro-modules lint && bun sync-core",
     "lint-ci": "eslint \"**/*.{js,ts,tsx}\" -f @jamesacarr/github-actions --max-warnings 0",
     "test": "jest",
     "clean": "rm -rf android/build node_modules/**/android/build lib",
@@ -101,7 +102,8 @@
     "preset": "@react-native/jest-preset",
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
-      "<rootDir>/lib/"
+      "<rootDir>/lib/",
+      "<rootDir>/nitro/"
     ]
   },
   "react-native-builder-bob": {

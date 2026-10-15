@@ -5,9 +5,11 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (file) => JSON.parse(readFileSync(path.join(root, file), 'utf8'))
 const version = read(
-  'core/packages/react-native-nitro-modules/package.json'
+  'packages/react-native-nitro-modules/nitro/packages/react-native-nitro-modules/package.json'
 ).version
-const nitrogen = read('core/packages/nitrogen/package.json')
+const nitrogen = read(
+  'packages/react-native-nitro-modules/nitro/packages/nitrogen/package.json'
+)
 const nitrogenVersion = nitrogen.version
 if (nitrogen.dependencies['react-native-nitro-modules'] !== `^${version}`) {
   throw new Error('Nitrogen must depend on the matching runtime version.')
@@ -15,7 +17,7 @@ if (nitrogen.dependencies['react-native-nitro-modules'] !== `^${version}`) {
 const nativeVersion = readFileSync(
   path.join(
     root,
-    'core/packages/react-native-nitro-modules/cpp/utils/NitroDefines.hpp'
+    'packages/react-native-nitro-modules/nitro/packages/react-native-nitro-modules/cpp/utils/NitroDefines.hpp'
   ),
   'utf8'
 ).match(/#define NITRO_VERSION "([^"]+)"/)?.[1]

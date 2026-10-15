@@ -4,9 +4,9 @@ set -e
 
 CPP_DIRS=(
   # react-native-nitro-modules
-  "core/packages/react-native-nitro-modules/android/src/main/cpp"
-  "core/packages/react-native-nitro-modules/cpp"
-  "core/packages/react-native-nitro-modules/ios"
+  "packages/react-native-nitro-modules/nitro/packages/react-native-nitro-modules/android/src/main/cpp"
+  "packages/react-native-nitro-modules/nitro/packages/react-native-nitro-modules/cpp"
+  "packages/react-native-nitro-modules/nitro/packages/react-native-nitro-modules/ios"
   # react-native-nitro-test
   "packages/react-native-nitro-test/android/src/main/cpp"
   "packages/react-native-nitro-test/cpp"

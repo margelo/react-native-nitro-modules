@@ -1,4 +1,4 @@
-[submodule "core"]
-	path = core
+[submodule "nitro"]
+	path = packages/react-native-nitro-modules/nitro
 	url = https://github.com/margelo/nitro.git
 	branch = core-split

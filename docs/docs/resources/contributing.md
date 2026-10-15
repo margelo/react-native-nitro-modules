@@ -12,11 +12,11 @@ If you encounter issues with Nitro, want to fix a bug, or reproduce a bug in the
 This page covers **environment setup and reproduction** — how to run Nitro locally. For the contribution flow itself (what PRs we accept, the required test-per-fix rule, the nitrogen workflow, and the PR checklist), see [**CONTRIBUTING.md**](https://github.com/margelo/react-native-nitro-modules/blob/main/CONTRIBUTING.md) in the repo root. Read it before opening a PR.
 :::
 
-The `react-native-nitro-modules` repository is a Bun monorepo with the shared sources pinned in `core/`:
+The `react-native-nitro-modules` repository is a Bun monorepo with the shared sources pinned in `packages/react-native-nitro-modules/nitro/`:
 
 - `apps/example/`: A react-native app that uses `react-native-nitro-modules` and `react-native-nitro-test`.
-- `core/packages/nitrogen/`: The `nitrogen` CLI, maintained in [margelo/nitro](https://github.com/margelo/nitro).
-- `core/packages/react-native-nitro-modules/`: The shared native and JS/TS implementation.
+- `packages/react-native-nitro-modules/nitro/packages/nitrogen/`: The `nitrogen` CLI, maintained in [margelo/nitro](https://github.com/margelo/nitro).
+- `packages/react-native-nitro-modules/nitro/packages/react-native-nitro-modules/`: The shared native and JS/TS implementation.
 - `packages/`
   - `/react-native-nitro-modules/`: The published React Native package and its native build configuration. Shared implementation files are staged here by `bun sync-core`.
   - `/react-native-nitro-test/`: An example Nitro Module library full of specs used as compile-time and runtime tests.
@@ -74,7 +74,7 @@ After installing all dependencies, you can run the React Native app in `apps/exa
   </TabItem>
 </Tabs>
 
-Implementation changes belong in `core/packages/react-native-nitro-modules/` or `core/packages/nitrogen/`. Run `bun sync-core` after changing shared sources. See [shared sources and releases](https://github.com/margelo/react-native-nitro-modules/blob/main/CONTRIBUTING.md#shared-sources-and-releases) for the commit and release sequence.
+Implementation changes belong in `packages/react-native-nitro-modules/nitro/packages/react-native-nitro-modules/` or `packages/react-native-nitro-modules/nitro/packages/nitrogen/`. Run `bun sync-core` after changing shared sources. See [shared sources and releases](https://github.com/margelo/react-native-nitro-modules/blob/main/CONTRIBUTING.md#shared-sources-and-releases) for the commit and release sequence.
 
 ## Reproduce something in the Nitro Example app
 

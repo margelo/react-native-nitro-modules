@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'core'
+      - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
       - '.github/workflows/lint-cpp.yml'
@@ -16,7 +16,7 @@ on:
       - '**/*.mm'
   pull_request:
     paths:
-      - 'core'
+      - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
       - '.github/workflows/lint-cpp.yml'
@@ -45,5 +45,5 @@ jobs:
       - name: Verify no files have changed after format
         run: |
           git diff --exit-code HEAD -- . ':(exclude)bun.lock'
-          git -C core diff --exit-code HEAD
+          git -C packages/react-native-nitro-modules/nitro diff --exit-code HEAD
 

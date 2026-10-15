@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'core'
+      - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
       - '.github/workflows/run-nitrogen-init.yml'
@@ -14,7 +14,7 @@ on:
       - 'packages/template/**'
   pull_request:
     paths:
-      - 'core'
+      - 'packages/react-native-nitro-modules/nitro'
       - '.gitmodules'
       - 'scripts/sync-core.mjs'
       - '.github/workflows/run-nitrogen-init.yml'
@@ -40,4 +40,4 @@ jobs:
 
       - name: Run nitrogen init outside the repository
         working-directory: ${{ runner.temp }}
-        run: node "$GITHUB_WORKSPACE/core/packages/nitrogen/lib/index.js" init react-native-math
+        run: node "$GITHUB_WORKSPACE/packages/react-native-nitro-modules/nitro/packages/nitrogen/lib/index.js" init react-native-math

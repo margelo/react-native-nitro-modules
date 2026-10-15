@@ -9,7 +9,7 @@
   "author": "Marc Rousavy <me@mrousavy.com> (https://github.com/mrousavy)",
   "workspaces": [
     "packages/react-native-nitro-modules",
-    "core/packages/nitrogen",
+    "packages/react-native-nitro-modules/nitro/packages/nitrogen",
     "packages/react-native-nitro-test",
     "packages/react-native-nitro-test-external",
     "apps/*",
@@ -32,7 +32,7 @@
     "docs": "bun --cwd docs",
     "specs": "bun nitro-test specs",
     "nitro": "bun --cwd packages/react-native-nitro-modules",
-    "nitrogen": "bun --cwd core/packages/nitrogen",
+    "nitrogen": "bun --cwd packages/react-native-nitro-modules/nitro/packages/nitrogen",
     "nitro-test": "bun --cwd packages/react-native-nitro-test",
     "nitro-test-external": "bun --cwd packages/react-native-nitro-test-external",
     "example": "bun --cwd apps/example",
