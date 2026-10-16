@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
       - run: node --test scripts/find-core-release.test.mjs scripts/releases/*.test.mjs scripts/sync-core.test.mjs
